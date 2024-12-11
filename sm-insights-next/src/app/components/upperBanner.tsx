@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { auth, getUser } from "@/app/auth";
+import { getUser } from "@/app/auth";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { cookies } from "next/headers";

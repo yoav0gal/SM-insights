@@ -17,13 +17,13 @@ interface LongLivedTokenResponse {
   expires_in: number;
 }
 
-interface UserBasicData {
-  id?: string;
-  user_id?: string;
-  username?: string;
-  name?: string;
-  profile_picture_url?: string;
-}
+// interface UserBasicData {
+//   id?: string;
+//   user_id?: string;
+//   username?: string;
+//   name?: string;
+//   profile_picture_url?: string;
+// }
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

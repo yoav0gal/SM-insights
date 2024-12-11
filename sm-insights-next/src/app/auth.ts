@@ -25,21 +25,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      console.log("jwt");
-      if (user) {
-        // User is available during sign-in
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      console.log("session!");
-      console.log({ session, token }); // Add user id to the session
-      return session;
-    },
-  },
 });
 
 export interface UserData {

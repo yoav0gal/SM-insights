@@ -5,4 +5,4 @@ export const OAUTH_INSTAGRAM_REDIRECT_URI = `${
 
 // auth / callback / instagram;
 export const OAUTH_INSTAGRAM_SCOPE = `instagram_business_basic,business_manage_comments,business_content_publish,business_manage_messages`;
-export const MY_PROFILE_PATH = `${process.env.DOMAIN}/main`;
+export const MY_PROFILE_PATH = `${process.env.DOMAIN}`;

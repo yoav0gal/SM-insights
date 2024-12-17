@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { UserPage } from "../main/userPage";
 
 // Server Action
 async function logout() {
@@ -33,26 +34,31 @@ export async function UpperBanner() {
   }
 
   return (
-    <div className="bg-gray-900 p-6 flex items-center space-x-4 rounded-lg shadow-md">
-      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-700">
-        <Image
-          src={userData.profile_picture_url}
-          alt="Profile Picture"
-          width={80}
-          height={80}
-          className="object-cover w-full h-full"
-        />
+    <>
+      <div className="bg-gray-900 p-6 flex items-center space-x-4 rounded-lg shadow-md">
+        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-700">
+          <Image
+            src={userData.profile_picture_url}
+            alt="Profile Picture"
+            width={80}
+            height={80}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <div>
+          <h2 className="text-white text-2xl font-bold">{userData.name}</h2>
+        </div>
+        <button
+          onClick={logout}
+          className="text-gray-400 hover:text-white transition-colors duration-200 focus:outline-none"
+          aria-label="Logout"
+        >
+          <LogOut size={24} />
+        </button>
       </div>
-      <div>
-        <h2 className="text-white text-2xl font-bold">{userData.name}</h2>
+      <div className="bg-gray-900 p-6 flex items-center space-x-4 rounded-lg shadow-md">
+        <UserPage />
       </div>
-      <button
-        onClick={logout}
-        className="text-gray-400 hover:text-white transition-colors duration-200 focus:outline-none"
-        aria-label="Logout"
-      >
-        <LogOut size={24} />
-      </button>
-    </div>
+    </>
   );
 }

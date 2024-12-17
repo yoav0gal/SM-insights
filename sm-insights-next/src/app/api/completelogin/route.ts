@@ -96,7 +96,9 @@ export async function GET(request: NextRequest) {
     });
 
     // response.redirect("https://localhost:3000");
-    return NextResponse.redirect(MY_PROFILE_PATH);
+    return NextResponse.redirect(
+      `${MY_PROFILE_PATH}/instagram/profile/${userProfileData?.username}`
+    );
   } catch (error: unknown) {
     console.log(error);
     return Response.json({ error: error }, { status: 400 });

@@ -27,9 +27,9 @@ async function getAllComments(media_id: string) {
 export default async function Page({
   params,
 }: {
-  params: { media_id: string };
+  params: Promise<{ media_id: string }>;
 }) {
-  const media_id = (await params?.media_id) ?? "18013361653457648";
+  const media_id = (await params)?.media_id ?? "18013361653457648";
 
   // const comments = await getAllComments(media_id);
 

@@ -31,7 +31,7 @@ async function getUserPageData() {
 export default async function InstagramProfilePage({
   params,
 }: {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }) {
   const user = await getUser();
 

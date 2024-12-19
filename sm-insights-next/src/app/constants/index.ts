@@ -1,6 +1,6 @@
 export const OAUTH_INSTAGRAM_URL = `https://api.instagram.com/oauth/authorize`;
 export const OAUTH_INSTAGRAM_REDIRECT_URI = `${
-  process.env.NEXTAUTH_URL ?? `https://smfront-yoav0gals-projects.vercel.app`
+  process.env.NEXTAUTH_URL ?? `hhttps://smfront.vercel.app`
 }${false ? "/api/auth/callback/instagram" : "/api/completelogin"}`;
 
 // auth / callback / instagram;

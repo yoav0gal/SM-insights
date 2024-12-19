@@ -30,8 +30,8 @@ export default function TermsAndConditions() {
           <p>
             <strong>Affiliate</strong> means an entity that controls, is
             controlled by or is under common control with a party, where
-            "control" means ownership of 50% or more of the shares, equity
-            interest or other securities entitled to vote for election of
+            &quot;control&quot; means ownership of 50% or more of the shares,
+            equity interest or other securities entitled to vote for election of
             directors or other managing authority.
           </p>
         </li>
@@ -42,8 +42,9 @@ export default function TermsAndConditions() {
         </li>
         <li>
           <p>
-            <strong>Company</strong> (referred to as either "the Company", "We",
-            "Us" or "Our" in this Agreement) refers to AudieLens.
+            <strong>Company</strong> (referred to as either &quot;the
+            Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in
+            this Agreement) refers to AudieLens.
           </p>
         </li>
         <li>
@@ -59,10 +60,11 @@ export default function TermsAndConditions() {
         </li>
         <li>
           <p>
-            <strong>Terms and Conditions</strong> (also referred as "Terms")
-            mean these Terms and Conditions that form the entire agreement
-            between You and the Company regarding the use of the Service. This
-            Terms and Conditions agreement has been created with the help of the{" "}
+            <strong>Terms and Conditions</strong> (also referred as
+            &quot;Terms&quot;) mean these Terms and Conditions that form the
+            entire agreement between You and the Company regarding the use of
+            the Service. This Terms and Conditions agreement has been created
+            with the help of the{" "}
             <a
               href="https://www.freeprivacypolicy.com/free-terms-and-conditions-generator/"
               target="_blank"

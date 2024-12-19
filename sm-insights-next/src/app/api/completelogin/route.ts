@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse, NextResponse as Response } from "next/server";
-import { MY_PROFILE_PATH, OAUTH_INSTAGRAM_REDIRECT_URI } from "@/app/constants";
+import { DOMAIN, OAUTH_INSTAGRAM_REDIRECT_URI } from "@/app/constants";
 import { cookies } from "next/headers";
 // import { signIn } from "@/app/auth.ts";
 import { getInstagramUser } from "@/app/lib/instagram";
@@ -33,6 +33,11 @@ export async function GET(request: NextRequest) {
   if (error) {
     const reason = searchParams.get("error_reason");
     const description = searchParams.get("error_description");
+
+    if (error == "access_denied" && reason == "user_denied") {
+      return NextResponse.redirect(DOMAIN);
+    }
+
     return Response.json({ error, reason, description }, { status: 400 });
   }
 
@@ -97,7 +102,7 @@ export async function GET(request: NextRequest) {
 
     // response.redirect("https://localhost:3000");
     return NextResponse.redirect(
-      `${MY_PROFILE_PATH}/instagram/profile/${userProfileData?.username}`
+      `${DOMAIN}/instagram/profile/${userProfileData?.username}`
     );
   } catch (error: unknown) {
     console.log(error);

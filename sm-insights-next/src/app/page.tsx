@@ -112,13 +112,13 @@ export default function LandingPage() {
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
             className="text-xs hover:underline underline-offset-4 text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
-            href="#"
+            href="/terms-and-conditions"
           >
-            Terms of Service
+            Terms and Conditions
           </Link>
           <Link
             className="text-xs hover:underline underline-offset-4 text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
-            href="#"
+            href="/privacy-policy"
           >
             Privacy
           </Link>

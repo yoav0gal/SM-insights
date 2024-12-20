@@ -48,7 +48,10 @@ export default async function AnalyzePostPage({
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800">
-      <Header userProfileUrl={user.profile_picture_url} />
+      <Header
+        userProfileUrl={user.profile_picture_url}
+        homeUrl={`/instagram/profile/${user.username}`}
+      />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
         <h1 className="text-3xl font-bold mb-6 text-purple-600 dark:text-purple-400">
           Analyze Post

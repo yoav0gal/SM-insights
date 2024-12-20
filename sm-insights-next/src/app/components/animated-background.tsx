@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 
 export function AnimatedBackground() {
+  if (!window) return null;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

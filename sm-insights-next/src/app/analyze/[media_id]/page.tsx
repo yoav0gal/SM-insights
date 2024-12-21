@@ -1,6 +1,7 @@
 import { getUser } from "@/app/auth";
 import { Header } from "@/app/instagram/profile/[username]/header";
 import { CommentList } from "./comment-list";
+import { SearchBarWrapper } from "./serch-comments";
 
 interface Comment {
   id: string;
@@ -56,6 +57,7 @@ export default async function AnalyzePostPage({
         <h1 className="text-3xl font-bold mb-6 text-purple-600 dark:text-purple-400">
           Analyze Post
         </h1>
+        <SearchBarWrapper comments={comments} />
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
             Comments for Post {media_id}

@@ -1,6 +1,6 @@
 import { ThumbsUp } from "lucide-react";
 
-interface Comment {
+export interface Comment {
   id: string;
   text: string;
   from: { id: string; username: string };

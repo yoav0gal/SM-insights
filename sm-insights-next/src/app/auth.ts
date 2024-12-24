@@ -1,7 +1,11 @@
 import NextAuth from "next-auth";
 import Instagram from "next-auth/providers/instagram";
+// import Facebook from "next-auth/providers/facebook";
 
 import {
+  // OAUTH_FACEBOOK_URL,
+  // OAUTH_FACEBOOK_REDIRECT_URI,
+  // OAUTH_FACEBOOK_SCOPE,
   OAUTH_INSTAGRAM_REDIRECT_URI,
   OAUTH_INSTAGRAM_SCOPE,
   OAUTH_INSTAGRAM_URL,
@@ -24,6 +28,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
     }),
+    // Facebook({
+    //   clientId: process.env.AUTH_FACEBOOK_ID,
+    //   clientSecret: process.env.AUTH_FACEBOOK_SECRET,
+    //   authorization: {
+    //     url: OAUTH_FACEBOOK_URL,
+    //     params: {
+    //       scope: OAUTH_FACEBOOK_SCOPE,
+    //       redirect_uri: OAUTH_FACEBOOK_REDIRECT_URI,
+    //       display: "pag",
+    //       extras: { setup: { channel: "IG_API_ONBOARDING" } },
+    //       response_type: "token",
+    //     },
+    //   },
+    // }),
   ],
 });
 

@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Use this as a last resort
   },
+  serverExternalPackages: ["sharp", "onnxruntime-node"],
 };
 
 export default nextConfig;

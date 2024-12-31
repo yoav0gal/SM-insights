@@ -97,8 +97,7 @@ export async function getVideoComments(
   limit: number = YOUTUBE_DEFAULT_COMMENTS_LIMIT
 ): Promise<{ comments: TransformedComment[]; commentsCount: number }> {
   "use server";
-  console.log("valid log form getVideoComments");
-  console.log(USE_YOUTUBE_API_MOCKS);
+
   if (USE_YOUTUBE_API_MOCKS) return commentsDataMock;
 
   let allComments: TransformedComment[] = [];

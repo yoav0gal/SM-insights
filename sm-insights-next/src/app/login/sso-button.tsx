@@ -10,8 +10,6 @@ export function SSOButton({ provider }: SSOButtonProps) {
   const getProviderDetails = (provider: SSOButtonProps["provider"]) => {
     switch (provider) {
       case "instagram":
-        console.log(FULL_INSTAGRAM_OAUTH_URL);
-
         return {
           name: "Instagram",
           logo: "/instagram.svg",

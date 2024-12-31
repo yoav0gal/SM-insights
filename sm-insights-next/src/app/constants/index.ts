@@ -17,3 +17,18 @@ export const OAUTH_FACEBOOK_REDIRECT_URI = `${
 }${false ? "/api/auth/callback/instagram" : "/facebook"}`;
 
 export const OAUTH_FACEBOOK_COMPLETE_LOGIN_PATH = `${process.env.NEXTAUTH_URL}/api/facebook-login`;
+
+export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 30;
+export const USE_YOUTUBE_API_MOCKS = Boolean(process.env.USE_MOCK_YOUTUBE_DATA);
+
+export const FULL_INSTAGRAM_OAUTH_URL = new URL(OAUTH_INSTAGRAM_URL);
+FULL_INSTAGRAM_OAUTH_URL.searchParams.append(
+  "client_id",
+  process.env.AUTH_INSTAGRAM_ID_LOGIN ?? ""
+);
+FULL_INSTAGRAM_OAUTH_URL.searchParams.append(
+  "redirect_uri",
+  OAUTH_INSTAGRAM_REDIRECT_URI
+);
+FULL_INSTAGRAM_OAUTH_URL.searchParams.append("scope", OAUTH_INSTAGRAM_SCOPE);
+FULL_INSTAGRAM_OAUTH_URL.searchParams.append("response_type", "code");

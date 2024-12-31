@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTextEmbedding } from "@/app/STC/modernBert";
+// import { getTextEmbedding } from "@/app/STC/modernBert";
 
 export async function GET(request: NextRequest) {
   // const text = "Your input text goes here.";

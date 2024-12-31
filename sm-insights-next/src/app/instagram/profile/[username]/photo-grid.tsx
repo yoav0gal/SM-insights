@@ -17,7 +17,7 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
   return (
     <div className="grid grid-cols-3 gap-3 sm:gap-2">
       {photos.map((photo) => (
-        <Link key={photo.id} href={`/analyze/${photo.id}`}>
+        <Link key={photo.id} href={`/instagram/analyze/${photo.id}`}>
           <div className="aspect-square relative overflow-hidden group rounded-2xl">
             <Image
               src={photo.thumbnail_url || photo.media_url}

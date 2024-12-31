@@ -42,7 +42,7 @@ export default function LandingPage() {
           </Link>
           <Link
             className="text-sm font-medium px-4 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-100 hover:text-purple-700 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-900 dark:hover:text-purple-300"
-            href="/api/auth/signin"
+            href="/login"
           >
             Login
           </Link>

@@ -19,8 +19,6 @@ export async function fetchVideoDetails(
   videoId: string
 ): Promise<VideoDetails | null> {
   "use server";
-  console.log("valid log form fetchVideoDetails");
-  console.log(USE_YOUTUBE_API_MOCKS);
   if (USE_YOUTUBE_API_MOCKS) return youtubeVideoDetailsMocks;
 
   try {

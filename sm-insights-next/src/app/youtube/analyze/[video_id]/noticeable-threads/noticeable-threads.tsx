@@ -1,6 +1,15 @@
 import { Suspense } from "react";
-import { ReadThreadButton } from "./read-thread-button";
+import {} from "./read-thread-button";
 import { Skeleton } from "@/app/components/skeleton";
+import { TransformedComment } from "@/app/api/youtube/comments/actions";
+import { Thread } from "./thread";
+
+export type Thread = {
+  comment: TransformedComment;
+  summary: string;
+  topic: string;
+  totalReplyCount: number;
+};
 
 export function ThreadSkeleton() {
   return (
@@ -12,23 +21,6 @@ export function ThreadSkeleton() {
   );
 }
 
-function Thread({ thread }: { thread: any }) {
-  return (
-    <div>
-      <h4 className="font-semibold text-gray-800 dark:text-gray-200">
-        {thread.topic}
-      </h4>
-      <p className="text-sm text-gray-600 dark:text-gray-400">
-        {thread.topComment}
-      </p>
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-500">
-        Replies: {thread.replyCount}
-      </div>
-      <ReadThreadButton threadId={thread.id} />
-    </div>
-  );
-}
-
 export async function NoticeableThreads({ threads }: { threads: any[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
@@ -36,6 +28,7 @@ export async function NoticeableThreads({ threads }: { threads: any[] }) {
         Noticeable Threads
       </h3>
       <div className="space-y-4">
+        {threads.length === 0 && <h4>no threads found </h4>}
         {threads.map((thread, index) => (
           <Suspense key={index} fallback={<ThreadSkeleton />}>
             <Thread thread={thread} />

@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ThreadSkeleton } from "./noticeable-threads";
+import { ThreadSkeleton, type Thread } from "./noticeable-threads";
 
-export function ReadThreadButton({ threadId }: { threadId: string }) {
+type ReadThreadButtonProps = {
+  thread: Thread;
+};
+export function ReadThreadButton(props: ReadThreadButtonProps) {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [threadContent, setThreadContent] = useState<string | null>(null);

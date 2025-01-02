@@ -18,7 +18,7 @@ export const OAUTH_FACEBOOK_REDIRECT_URI = `${
 
 export const OAUTH_FACEBOOK_COMPLETE_LOGIN_PATH = `${process.env.NEXTAUTH_URL}/api/facebook-login`;
 
-export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 30;
+export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 60;
 export const USE_YOUTUBE_API_MOCKS = Boolean(process.env.USE_MOCK_YOUTUBE_DATA);
 
 export const FULL_INSTAGRAM_OAUTH_URL = new URL(OAUTH_INSTAGRAM_URL);

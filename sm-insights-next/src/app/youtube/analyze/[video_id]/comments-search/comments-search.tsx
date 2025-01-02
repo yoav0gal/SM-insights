@@ -5,8 +5,10 @@ import { Search } from "lucide-react";
 import { TransformedComment } from "@/app/api/youtube/comments/actions";
 import Image from "next/image";
 import { Skeleton } from "@/app/components/skeleton";
+import { searchComments } from "./search-comments-actions";
+import { Comment } from "../recommended-comments/comment";
 
-export function CommentSearch() {
+export function CommentSearch({ videoId }: { videoId: string }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<TransformedComment[]>([]);
   const [loading, setLoading] = useState(false);
@@ -15,32 +17,35 @@ export function CommentSearch() {
     e.preventDefault();
     setLoading(true);
     // Simulating an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // In a real application, you would fetch search results from an API
-    const mockResults: TransformedComment[] = [
-      {
-        displayText: `This comment contains the search term "${query}". It's a great example!`,
-        authorDisplayName: "Search User 1",
-        authorProfileImageUrl:
-          "https://randomuser.me/api/portraits/women/3.jpg",
-        authorChannelUrl: "https://www.youtube.com/channel/UC1122334455",
-        likeCount: 15,
-        updatedAt: new Date().toISOString(),
-        totalReplyCount: 2,
-        replies: [],
-      },
-      {
-        displayText: `Another comment matching "${query}". This shows how the search works.`,
-        authorDisplayName: "Search User 2",
-        authorProfileImageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
-        authorChannelUrl: "https://www.youtube.com/channel/UC5544332211",
-        likeCount: 8,
-        updatedAt: new Date().toISOString(),
-        totalReplyCount: 1,
-        replies: [],
-      },
-    ];
-    setSearchResults(mockResults);
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // // In a real application, you would fetch search results from an API
+    // const mockResults: TransformedComment[] = [
+    //   {
+    //     displayText: `This comment contains the search term "${query}". It's a great example!`,
+    //     authorDisplayName: "Search User 1",
+    //     authorProfileImageUrl:
+    //       "https://randomuser.me/api/portraits/women/3.jpg",
+    //     authorChannelUrl: "https://www.youtube.com/channel/UC1122334455",
+    //     likeCount: 15,
+    //     updatedAt: new Date().toISOString(),
+    //     totalReplyCount: 2,
+    //     replies: [],
+    //   },
+    //   {
+    //     displayText: `Another comment matching "${query}". This shows how the search works.`,
+    //     authorDisplayName: "Search User 2",
+    //     authorProfileImageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+    //     authorChannelUrl: "https://www.youtube.com/channel/UC5544332211",
+    //     likeCount: 8,
+    //     updatedAt: new Date().toISOString(),
+    //     totalReplyCount: 1,
+    //     replies: [],
+    //   },
+    // ];
+
+    const results = await searchComments(videoId, query);
+
+    setSearchResults(results);
     setLoading(false);
   };
 
@@ -74,27 +79,7 @@ export function CommentSearch() {
               key={index}
               className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0 last:pb-0"
             >
-              <div className="flex items-start space-x-3">
-                <Image
-                  src={comment.authorProfileImageUrl}
-                  width={40}
-                  height={40}
-                  alt={comment.authorDisplayName}
-                  className="w-10 h-10 rounded-full"
-                />
-                <div>
-                  <h4 className="font-semibold text-gray-800 dark:text-gray-200">
-                    {comment.authorDisplayName}
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {comment.displayText}
-                  </p>
-                  <div className="mt-2 text-xs text-gray-500 dark:text-gray-500">
-                    Likes: {comment.likeCount} | Replies:{" "}
-                    {comment.totalReplyCount}
-                  </div>
-                </div>
-              </div>
+              <Comment comment={comment} />
             </div>
           ))}
         </div>

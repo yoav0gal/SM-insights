@@ -26,6 +26,9 @@ export function YouTubeSearch() {
     const shortMatch = url.match(/\/shorts\/([^?&/]+)/);
     if (shortMatch) return shortMatch[1];
 
+    const youtuBeMatch = url.match(/youtu\.be\/([^?&/]+)/);
+    if (youtuBeMatch) return youtuBeMatch[1];
+
     return null;
   };
 

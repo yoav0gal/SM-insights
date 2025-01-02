@@ -22,7 +22,12 @@ export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 60;
 export const USE_YOUTUBE_API_MOCKS = Boolean(
   process.env.USE_MOCK_YOUTUBE_DATA === "true"
 );
-console.log(USE_YOUTUBE_API_MOCKS);
+console.log(USE_YOUTUBE_API_MOCKS ? "using mocks" : " using real data");
+
+type GeminiModel = "gemini-1.5-flash" | "gemini-1.5-flash-8b";
+export const GEMINI_MODEL = (process.env.GEMINI_MODEL ??
+  "gemini-1.5-flash-8b") as GeminiModel;
+console.log(`Using Gemini model: ${GEMINI_MODEL}`);
 
 export const FULL_INSTAGRAM_OAUTH_URL = new URL(OAUTH_INSTAGRAM_URL);
 FULL_INSTAGRAM_OAUTH_URL.searchParams.append(

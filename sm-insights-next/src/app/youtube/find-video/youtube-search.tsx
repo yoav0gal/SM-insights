@@ -20,13 +20,13 @@ export function YouTubeSearch() {
   };
 
   const extractVideoId = (url: string): string | null => {
-    const classicMatch = url.match(/[?&]v=([^&]+)/);
+    const classicMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
     if (classicMatch) return classicMatch[1];
 
-    const shortMatch = url.match(/\/shorts\/([^?&/]+)/);
+    const shortMatch = url.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
     if (shortMatch) return shortMatch[1];
 
-    const youtuBeMatch = url.match(/youtu\.be\/([^?&/]+)/);
+    const youtuBeMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
     if (youtuBeMatch) return youtuBeMatch[1];
 
     return null;

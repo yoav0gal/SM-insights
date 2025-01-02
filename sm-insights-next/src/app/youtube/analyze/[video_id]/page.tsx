@@ -1,15 +1,17 @@
 import { Suspense } from "react";
 import { VideoDetailsComponent } from "./video-details";
-import { RecommendedComments } from "./recommended-comments";
-import { NoticeableThreads } from "./noticeable-threads";
-import { KeyTakeaways } from "./key-takeaways";
+import { RecommendedComments } from "./recommended-comments/recommended-comments";
+import { NoticeableThreads } from "./noticeable-threads/noticeable-threads";
+import { KeyTakeaways } from "./key-takeaways/key-takeaways";
 import { CommentClusters } from "./comments-clusters/comments-cluster";
 import { CommentSearch } from "./comments-search/comments-search";
 import { Skeleton } from "@/app/components/skeleton";
-
+import { CommentQuestions } from "./comments-questions/comments-questions";
 import { getVideoComments } from "@/app/api/youtube/comments/actions";
 import { fetchVideoDetails } from "@/app/api/youtube/video-details/actions";
 import { Header } from "@/app/components/header";
+import { getModel } from "./analysis";
+import { DEFAULT_CREATOR_ID } from "./youtube-analysis-constants";
 
 function SectionSkeleton() {
   return (
@@ -27,17 +29,16 @@ export default async function YouTubeAnalyzePage({
   params: Promise<{ video_id: string }>;
 }) {
   const videoId = (await params)?.video_id;
-  // In a real application, you would fetch the data here based on the video_id
-  const [videoDetails, commentsObj] = await Promise.all([
-    fetchVideoDetails(videoId),
-    getVideoComments(videoId),
-  ]);
 
-  const comments = commentsObj.comments;
+  const model = await getModel(videoId, DEFAULT_CREATOR_ID);
 
-  const recommendedThreds = comments
-    .sort((a, b) => b.replies.length - a.replies.length)
-    .slice(0, 3);
+  const [recommendations, noticeableThreads, clustering, videoDetails] =
+    await Promise.all([
+      model.recommendations(),
+      model.noticeableThreads(),
+      model.clusterBig(),
+      fetchVideoDetails(videoId),
+    ]);
 
   return (
     <>
@@ -53,20 +54,24 @@ export default async function YouTubeAnalyzePage({
                 <VideoDetailsComponent details={videoDetails} />
               </Suspense>
               <Suspense fallback={<SectionSkeleton />}>
-                <RecommendedComments initialComments={comments.slice(0, 3)} />
+                <RecommendedComments
+                  initialComments={recommendations}
+                  videoId={videoId}
+                />
               </Suspense>
               <Suspense fallback={<SectionSkeleton />}>
-                <NoticeableThreads threads={recommendedThreds} />
+                <NoticeableThreads threads={noticeableThreads} />
               </Suspense>
             </div>
             <div className="lg:col-span-2 space-y-8">
               <Suspense fallback={<SectionSkeleton />}>
-                <KeyTakeaways />
+                <KeyTakeaways videoId={videoId} />
               </Suspense>
               <Suspense fallback={<SectionSkeleton />}>
-                <CommentClusters />
+                <CommentClusters initialData={clustering} videoId={videoId} />
               </Suspense>
-              <CommentSearch />
+              <CommentSearch videoId={videoId} />
+              <CommentQuestions videoId={videoId} />
             </div>
           </div>
         </div>

@@ -1,9 +1,10 @@
+"use client";
 import { Suspense } from "react";
 import { TransformedComment } from "@/app/api/youtube/comments/actions";
-import Image from "next/image";
-import { RecommendMoreButton } from "./recommend-more-button";
 import { Skeleton } from "@/app/components/skeleton";
-
+import { Comment } from "./comment";
+import { useState } from "react";
+import { recommendComments } from "./recommend-comments-actions";
 export function CommentSkeleton() {
   return (
     <div className="flex items-start space-x-3">
@@ -17,49 +18,46 @@ export function CommentSkeleton() {
   );
 }
 
-function Comment({ comment }: { comment: TransformedComment }) {
-  return (
-    <div className="flex items-start space-x-3">
-      <Image
-        src={comment.authorProfileImageUrl}
-        alt={comment.authorDisplayName}
-        width={40}
-        height={40}
-        className="rounded-full"
-      />
-      <div>
-        <h4 className="font-semibold text-gray-800 dark:text-gray-200">
-          {comment.authorDisplayName}
-        </h4>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {comment.displayText}
-        </p>
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-500">
-          Likes: {comment.likeCount} | Replies: {comment.totalReplyCount}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export async function RecommendedComments({
+export function RecommendedComments({
+  videoId,
   initialComments,
 }: {
+  videoId: string;
   initialComments: TransformedComment[];
 }) {
+  const [recommendedComments, setRecommendedComments] =
+    useState(initialComments);
+  const [loading, setLoading] = useState(false);
+
+  const handleRecommendMore = async () => {
+    setLoading(true);
+    // Simulating an API call
+    const newRecommendedComment = await recommendComments(videoId);
+
+    setRecommendedComments(newRecommendedComment);
+
+    setLoading(false);
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
       <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
         Recommended Comments
       </h3>
       <div className="space-y-4">
-        {initialComments.map((comment, index) => (
+        {recommendedComments.map((comment, index) => (
           <Suspense key={index} fallback={<CommentSkeleton />}>
             <Comment comment={comment} />
           </Suspense>
         ))}
       </div>
-      <RecommendMoreButton />
+      <button
+        onClick={handleRecommendMore}
+        className="mt-4 text-purple-600 dark:text-purple-400 hover:underline"
+        disabled={loading}
+      >
+        {loading ? <CommentSkeleton /> : "Recommend More"}
+      </button>
     </div>
   );
 }

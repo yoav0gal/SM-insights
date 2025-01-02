@@ -11,8 +11,34 @@ export const commentsDataMock = {
       authorChannelUrl: "http://www.youtube.com/@khaledosman9785",
       likeCount: 11489,
       updatedAt: "2021-07-24T11:57:52Z",
-      totalReplyCount: 199,
-      replies: [Array],
+      totalReplyCount: 3,
+      replies: [
+        {
+          displayText:
+            "Po is not what is was nor what he will be. Po is Po. Because he chose to be Po.",
+          authorDisplayName: "@ankit9366",
+          authorProfileImageUrl:
+            "https://yt3.ggpht.com/ytc/AIdro_kTxowFeIMkXmS6pV5RwVVLT4w9rliL7vZAYtKsTyF9emQ=s48-c-k-c0x00ffffff-no-rj",
+          authorChannelUrl: "http://www.youtube.com/@ankit9366",
+          likeCount: 0,
+          updatedAt: "2024-12-30T02:56:30Z",
+          totalReplyCount: 1,
+          replies: [
+            {
+              displayText:
+                "Po is not what is was nor what he will be. Po is Po. Because he chose to be Po.",
+              authorDisplayName: "@ankit9366",
+              authorProfileImageUrl:
+                "https://yt3.ggpht.com/ytc/AIdro_kTxowFeIMkXmS6pV5RwVVLT4w9rliL7vZAYtKsTyF9emQ=s48-c-k-c0x00ffffff-no-rj",
+              authorChannelUrl: "http://www.youtube.com/@ankit9366",
+              likeCount: 0,
+              updatedAt: "2024-12-30T02:56:30Z",
+              totalReplyCount: 0,
+              replies: [],
+            },
+          ],
+        },
+      ],
     },
     {
       displayText:

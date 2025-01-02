@@ -23,7 +23,7 @@ Respond in Json format - {summary:string , takeaways: string[]}.
 const RECOMMENDED_COMMENTS_INSTRUCTIONS = `
 Recommend 3 distinct comments for the creator to read, prioritizing those that align with their stated preferences: ${DEFAULT_CREATOR_PREFERENCES}.
 Ensure you do not recommend the same comment twice across multiple requests for recommendations. 
-Respond in json format - comment[]
+Respond in json format - { displayText: string, authorDisplayName: string, authorProfileImageUrl: string, authorChannelUrl: string, likeCount: number, updatedAt: string, totalReplyCount: number, replies: comment[] }[].
 `;
 
 const NOTICEABLE_THREADS_INSTRUCTIONS = `

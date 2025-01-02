@@ -8,6 +8,7 @@ import { getVideoCommentsLogic } from "@/app/api/youtube/comments/logic";
 import type { KeyTakeaways } from "./key-takeaways/key-takeaways";
 import type { TransformedComment } from "@/app/api/youtube/comments/logic";
 import type { Thread } from "./noticeable-threads/noticeable-threads";
+import { GEMINI_MODEL } from "@/app/constants";
 
 const genAI = new GoogleGenerativeAI(
   process.env.GEMINI_API_KEY ?? "Add Your Gemini API key"
@@ -35,7 +36,7 @@ const activeModels = new Map<string, AnalysisModel>();
 
 export function getGenerativeModel(systemInstruction: string) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: GEMINI_MODEL,
     systemInstruction: systemInstruction,
   });
 
@@ -43,9 +44,13 @@ export function getGenerativeModel(systemInstruction: string) {
 }
 
 function formatGeminiJsonResponse<T>(responseText: string): T {
-  if (responseText.startsWith("```json") && responseText.endsWith("```\n")) {
+  if (
+    responseText.startsWith("```json") &&
+    (responseText.endsWith("```\n") || responseText.endsWith("```"))
+  ) {
     return JSON.parse(responseText.slice(7, -4));
   }
+
   return JSON.parse(responseText);
 }
 
@@ -58,40 +63,55 @@ async function addAnalysisTasksToModel(
   }
 
   const taskMap = {
-    keyTakeaways: async () =>
-      await executeTask<KeyTakeaways>(
+    keyTakeaways: async () => {
+      const response = await executeTask<KeyTakeaways>(
         `The task is: ${TASK_NAMES.KEY_TAKEAWAYS}`
-      ),
-    recommendations: async () =>
-      await executeTask<TransformedComment[]>(
+      );
+      return response;
+    },
+    recommendations: async () => {
+      const recommendationsResponse = await executeTask<TransformedComment[]>(
         `The task is: ${TASK_NAMES.RECOMMENDATIONS}`
-      ),
-    noticeableThreads: async () =>
-      await executeTask<Thread[]>(
+      );
+      console.log({ recommendationsResponse });
+      return recommendationsResponse;
+    },
+    noticeableThreads: async () => {
+      const response = await executeTask<Thread[]>(
         `The task is: ${TASK_NAMES.NOTICEABLE_THREADS}`
-      ),
-    search: async (query: string) =>
-      await executeTask<TransformedComment[]>(
+      );
+      return response;
+    },
+    search: async (query: string) => {
+      const response = await executeTask<TransformedComment[]>(
         `The task is: ${TASK_NAMES.SEARCH}, the query is: ${query}`
-      ),
+      );
+      return response;
+    },
     deepDive: async (query: string) => {
       const response = await model.generateContent(
         `The task is: ${TASK_NAMES.DEEP_DIVE}, the query is: ${query}`
       );
       return response.response.text();
     },
-    clusterBig: async () =>
-      await executeTask<ClusterResult>(
+    clusterBig: async () => {
+      const response = await executeTask<ClusterResult>(
         `The task is: ${TASK_NAMES.CLUSTER_BIG}`
-      ),
-    clusterSmall: async () =>
-      await executeTask<ClusterResult>(
+      );
+      return response;
+    },
+    clusterSmall: async () => {
+      const response = await executeTask<ClusterResult>(
         `The task is: ${TASK_NAMES.CLUSTER_SMALL}`
-      ),
-    clusterHierarchical: async () =>
-      await executeTask<ClusterResult>(
+      );
+      return response;
+    },
+    clusterHierarchical: async () => {
+      const response = await executeTask<ClusterResult>(
         `The task is: ${TASK_NAMES.CLUSTER_HIERARCHICAL}`
-      ),
+      );
+      return response;
+    },
   };
 
   // Add the taskMap functions to the model

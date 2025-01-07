@@ -1,7 +1,6 @@
 export const OAUTH_INSTAGRAM_URL = `https://api.instagram.com/oauth/authorize`;
-export const OAUTH_INSTAGRAM_REDIRECT_URI = `${
-  process.env.NEXTAUTH_URL ?? `https://smfront.vercel.app`
-}${false ? "/api/auth/callback/instagram" : "/api/completelogin"}`;
+export const OAUTH_INSTAGRAM_REDIRECT_URI = `${process.env.NEXTAUTH_URL ?? `https://smfront.vercel.app`
+  }${false ? "/api/auth/callback/instagram" : "/api/completelogin"}`;
 
 // auth / callback / instagram;
 export const OAUTH_INSTAGRAM_SCOPE = `instagram_business_basic,instagram_business_basic,business_manage_comments,business_content_publish,business_manage_messages,instagram_business_manage_comments`;
@@ -12,9 +11,8 @@ export const OAUTH_FACEBOOK_URL = `https://www.facebook.com/dialog/oauth`;
 
 export const OAUTH_FACEBOOK_SCOPE = `instagram_basic,instagram_content_publish,instagram_manage_comments,instagram_manage_insights,pages_show_list,pages_read_engagement`;
 
-export const OAUTH_FACEBOOK_REDIRECT_URI = `${
-  process.env.NEXTAUTH_URL ?? `https://smfront.vercel.app`
-}${false ? "/api/auth/callback/instagram" : "/facebook"}`;
+export const OAUTH_FACEBOOK_REDIRECT_URI = `${process.env.NEXTAUTH_URL ?? `https://smfront.vercel.app`
+  }${false ? "/api/auth/callback/instagram" : "/facebook"}`;
 
 export const OAUTH_FACEBOOK_COMPLETE_LOGIN_PATH = `${process.env.NEXTAUTH_URL}/api/facebook-login`;
 
@@ -40,3 +38,7 @@ FULL_INSTAGRAM_OAUTH_URL.searchParams.append(
 );
 FULL_INSTAGRAM_OAUTH_URL.searchParams.append("scope", OAUTH_INSTAGRAM_SCOPE);
 FULL_INSTAGRAM_OAUTH_URL.searchParams.append("response_type", "code");
+
+
+export const OAUTH_GOOGLE_REDIRECT_URI = `${DOMAIN}/api/google/login`;
+

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FULL_INSTAGRAM_OAUTH_URL } from "../constants";
+import { googleAuthUrl } from "../clients/google-auth";
 
 interface SSOButtonProps {
   provider: "instagram" | "google" | "youtube";
@@ -19,7 +20,7 @@ export function SSOButton({ provider }: SSOButtonProps) {
         return {
           name: "Google",
           logo: "/google.svg",
-          redirect_uri: "/youtube/find-video",
+          redirect_uri: googleAuthUrl,
         };
       case "youtube":
         return {

@@ -1,3 +1,4 @@
+import { Skeleton } from "@/app/components/skeleton";
 import { getKeyTakeaways } from "./key-takeaways-actions";
 
 export type KeyTakeaways = {
@@ -10,7 +11,6 @@ interface KeyTakeawaysProps {
 }
 
 export async function KeyTakeaways(props: KeyTakeawaysProps) {
-  // In a real application, you would fetch key takeaways from an API or generate them server-side
   const { summary, takeaways } = await getKeyTakeaways(props.videoId);
 
   return (
@@ -29,3 +29,13 @@ export async function KeyTakeaways(props: KeyTakeawaysProps) {
     </div>
   );
 }
+
+KeyTakeaways.Skeletone = function SectionSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-8 w-3/4" />
+      <Skeleton className="h-32 w-full" />
+      <Skeleton className="h-24 w-5/6" />
+    </div>
+  );
+};

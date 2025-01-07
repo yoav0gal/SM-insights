@@ -59,6 +59,8 @@ async function addAnalysisTasksToModel(
 ): Promise<AnalysisModel> {
   async function executeTask<T>(prompt: string) {
     const response = await model.generateContent(prompt);
+    const responseText = response.response.text();
+    console.log({ task: prompt, response: responseText });
     return formatGeminiJsonResponse<T>(response.response.text());
   }
 
@@ -73,7 +75,6 @@ async function addAnalysisTasksToModel(
       const recommendationsResponse = await executeTask<TransformedComment[]>(
         `The task is: ${TASK_NAMES.RECOMMENDATIONS}`
       );
-      console.log({ recommendationsResponse });
       return recommendationsResponse;
     },
     noticeableThreads: async () => {

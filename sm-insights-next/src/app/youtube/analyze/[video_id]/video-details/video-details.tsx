@@ -1,12 +1,30 @@
 import Image from "next/image";
-import { VideoDetails } from "@/app/api/youtube/video-details/actions";
+import { Skeleton } from "@/app/components/skeleton";
+import { fetchVideoDetails } from "@/app/api/youtube/video-details/actions";
 
-export async function VideoDetailsComponent({
-  details,
-}: {
-  details: VideoDetails | null;
-}) {
-  if (!details) return null;
+function VideoDetailsSkeleton() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 space-y-4">
+      <Skeleton className="h-40 w-full" />
+      <Skeleton className="h-6 w-3/4" />
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <Skeleton className="h-4 w-1/4" />
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+      </div>
+    </div>
+  );
+}
+
+export async function VideoDetailsComponent({ videoId }: { videoId: string }) {
+  const details = await fetchVideoDetails(videoId);
+  if (details == null) return null;
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
       <div className="aspect-video mb-4 relative overflow-hidden rounded-lg">
@@ -44,3 +62,5 @@ export async function VideoDetailsComponent({
     </div>
   );
 }
+
+VideoDetailsComponent.Skeleton = VideoDetailsSkeleton;

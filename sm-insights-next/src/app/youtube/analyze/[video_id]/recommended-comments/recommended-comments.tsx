@@ -18,7 +18,7 @@ export function CommentSkeleton() {
   );
 }
 
-export function RecommendedComments({
+export function RecommendedCommentsList({
   videoId,
   initialComments,
 }: {
@@ -31,19 +31,13 @@ export function RecommendedComments({
 
   const handleRecommendMore = async () => {
     setLoading(true);
-    // Simulating an API call
     const newRecommendedComment = await recommendComments(videoId);
-
     setRecommendedComments(newRecommendedComment);
-
     setLoading(false);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-        Recommended Comments
-      </h3>
+    <>
       <div className="space-y-4">
         {recommendedComments.map((comment, index) => (
           <Suspense key={index} fallback={<CommentSkeleton />}>
@@ -58,6 +52,6 @@ export function RecommendedComments({
       >
         {loading ? <CommentSkeleton /> : "Recommend More"}
       </button>
-    </div>
+    </>
   );
 }

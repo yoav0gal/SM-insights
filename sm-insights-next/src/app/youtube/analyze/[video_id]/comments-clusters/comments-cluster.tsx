@@ -51,10 +51,7 @@ export function CommentClusters({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-        Comment Clusters
-      </h3>
+    <>
       {loading ? (
         <div className="h-80 flex items-center justify-center">
           <Skeleton className="h-64 w-64 rounded-full" />
@@ -101,6 +98,6 @@ export function CommentClusters({
       >
         {loading ? "Re-clustering..." : "Re-cluster Comments"}
       </button>
-    </div>
+    </>
   );
 }

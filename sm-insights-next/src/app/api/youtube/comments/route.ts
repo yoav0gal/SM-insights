@@ -3,7 +3,7 @@ import { youtube } from "@/app/clients/youtube";
 import { YOUTUBE_DEFAULT_COMMENTS_LIMIT } from "@/app/constants";
 import { commentsDataMock } from "./mocks";
 import { USE_YOUTUBE_API_MOCKS } from "@/app/constants";
-import { saveArrayToCSV } from "@/app/lib/arrayToCSV";
+// import { saveArrayToCSV } from "@/app/lib/arrayToCSV";
 
 type RawCommentSnippet = {
   authorDisplayName: string;

@@ -3,6 +3,7 @@ import { youtube } from "@/app/clients/youtube";
 import { YOUTUBE_DEFAULT_COMMENTS_LIMIT } from "@/app/constants";
 import { commentsDataMock } from "./mocks";
 import { USE_YOUTUBE_API_MOCKS } from "@/app/constants";
+import { saveArrayToCSV } from "@/app/lib/arrayToCSV";
 
 type RawCommentSnippet = {
   authorDisplayName: string;
@@ -153,7 +154,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const comments = await getVideoComments(videoId, commentsLimit);
+    const { comments } = await getVideoComments(videoId, commentsLimit);
+    // saveArrayToCSV(
+    //   comments.map((comment) => {
+    //     const newComment = {
+    //       text: comment.displayText,
+    //       author: comment.authorDisplayName,
+    //       likes: comment.likeCount,
+    //       replyCount: comment.totalReplyCount,
+    //     };
+    //     return newComment;
+    //   }),
+    //   `/Users/yoavgal/code/SM-insights/Notebooks/comments_dataset.csv`
+    // );
     return NextResponse.json(comments);
   } catch (error) {
     console.error(error);

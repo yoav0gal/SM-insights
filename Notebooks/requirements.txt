@@ -1,0 +1,6 @@
+pandas
+bertopic
+keybert
+nbformat
+ipykernel
+nb-clean

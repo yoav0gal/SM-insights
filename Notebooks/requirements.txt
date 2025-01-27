@@ -4,3 +4,4 @@ keybert
 nbformat
 ipykernel
 nb-clean
+beautifulsoup4

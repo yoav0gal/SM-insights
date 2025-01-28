@@ -5,3 +5,4 @@ nbformat
 ipykernel
 nb-clean
 beautifulsoup4
+#google-generativeai

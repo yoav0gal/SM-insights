@@ -1,0 +1,12 @@
+pandas
+bertopic
+keybert
+nbformat
+ipykernel
+nb-clean
+beautifulsoup4
+transformers
+huggingface_hub
+matplotlib
+mypy
+#google-generativeai

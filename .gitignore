@@ -39,5 +39,13 @@ next-env.d.ts
 
 # vscode
 .vscode/
+.history/
+
+# python
+__pycache__/
+
+# model
+bertopic_model.pkl
+sentence_transformer_model/
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs

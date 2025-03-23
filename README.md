@@ -55,7 +55,7 @@ For the PATH changes to take effect, you _must_ restart your terminal or IDE.
 **3.4 Configure the Git Filter:**
 
 ```
-git config --global filter.nb-clean.clean "nb-clean clean"
+git config --global filter.nb-clean.clean "nb-clean clean --preserve-cell-outputs"
 git config --global filter.nb-clean.smudge "cat"
 ```
 

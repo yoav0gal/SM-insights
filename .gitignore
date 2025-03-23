@@ -44,4 +44,8 @@ next-env.d.ts
 # python
 __pycache__/
 
+# model
+*.pkl
+sentence_transformer/
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs

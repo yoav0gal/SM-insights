@@ -46,6 +46,6 @@ __pycache__/
 
 # model
 bertopic_model.pkl
-sentence_transformer_model/*
+sentence_transformer_model/
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs

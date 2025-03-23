@@ -1,7 +1,9 @@
 *.ipynb filter=nb-clean
 **/*.ipynb filter=nb-clean
-Notebooks/models/sentence_transformer/** filter=lfs diff=lfs merge=lfs -text
-Notebooks/models/bertopic_model.pkl filter=lfs diff=lfs merge=lfs -text
-notebooks/model/bertopic.pkl filter=lfs diff=lfs merge=lfs -text
-notebooks/model/sentence_transformer/** filter=lfs diff=lfs merge=lfs -text
-*.pkl filter=lfs diff=lfs merge=lfs -text
+
+# Git LFS Try's
+# Notebooks/models/sentence_transformer/** filter=lfs diff=lfs merge=lfs -text
+# Notebooks/models/bertopic_model.pkl filter=lfs diff=lfs merge=lfs -text
+# notebooks/model/bertopic.pkl filter=lfs diff=lfs merge=lfs -text
+# notebooks/model/sentence_transformer/** filter=lfs diff=lfs merge=lfs -text
+# *.pkl filter=lfs diff=lfs merge=lfs -text

@@ -9,4 +9,5 @@ transformers
 huggingface_hub
 matplotlib
 mypy
+datasets
 #google-generativeai

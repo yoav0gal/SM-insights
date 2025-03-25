@@ -7,7 +7,7 @@ import os
 
 bertopic_model_file = "bertopic_model.pkl"
 sentence_transformer_name = "sentence_transformer_model"
-models_dir = os.path.dirname(os.path.abspath(__file__))
+models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
 bertopic_model_path = f'{models_dir}/{bertopic_model_file}'
 sentence_transformer_path = f'{models_dir}/{sentence_transformer_name}'
 

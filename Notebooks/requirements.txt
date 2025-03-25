@@ -10,4 +10,5 @@ huggingface_hub
 matplotlib
 mypy
 datasets
+emoji
 #google-generativeai

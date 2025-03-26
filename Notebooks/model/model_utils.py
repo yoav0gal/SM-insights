@@ -16,6 +16,12 @@ def create_sentence_transformer_model() -> SentenceTransformer:
     save_sentence_transformer_model(model)
     return model
 
+def get_trained_sentence_transformer() -> SentenceTransformer:
+    # works onlt if you trained the model, can download the folder from drive instead (GIY LFS was too mucgh for yoav ..)
+    # https://drive.google.com/drive/folders/1sNtvm0IrMmYlvZalasULVxYBhWT_5WAP?usp=drive_link
+    # put the trained_miniLM_twitter directory in models
+    return SentenceTransformer( os.path.join(models_dir, 'trained_miniLM_twitter'))
+
 def get_sentence_transformer_model() -> SentenceTransformer:
     if os.path.exists(sentence_transformer_path):
         return SentenceTransformer(sentence_transformer_path)

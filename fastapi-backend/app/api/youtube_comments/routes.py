@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import List
 import time
-from ..utils.save_array_to_csv import save_array_to_csv
+from ...utils.save_array_to_csv import save_array_to_csv
 from .logic import get_video_comments_logic
 from .models import TransformedComment
 from ...core.config import DOMAIN

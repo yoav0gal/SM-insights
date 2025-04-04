@@ -46,7 +46,7 @@ async def fetch_replies_batched(comment_ids: List[str]) -> Dict[str, List[Transf
                         parentId=comment_id,
                         maxResults=100,
                         pageToken=next_page_token,
-                        # textFormat="plainText"
+                        textFormat="plainText"
                     ).execute()
 
                     if response.get("items"):
@@ -75,7 +75,7 @@ async def get_video_comments_logic(video_id: str, limit: int = YOUTUBE_DEFAULT_C
                 videoId=video_id,
                 maxResults=min(limit - len(all_comments), 100),  
                 pageToken=next_page_token,
-                # textFormat="plainText",
+                textFormat="plainText",
             ).execute()
 
             if not response.get("items"):

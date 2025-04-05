@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from .api.youtube_comments import routes as youtube_comments_routes
+from .api.deep_stc import router as deep_stc_router
 
 app = FastAPI(
     title="SM Insights API",
@@ -7,7 +8,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-app.include_router(youtube_comments_routes.router) 
+app.include_router(youtube_comments_routes.router)
+app.include_router(deep_stc_router)
 
 @app.get("/")
 async def root():

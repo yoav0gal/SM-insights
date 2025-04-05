@@ -8,6 +8,7 @@ from .models import (
     YoutubeCommentThreadSnippet
 )
 from ...clients.youtube_client import youtube
+from ...utils.save_array_to_csv import save_array_to_csv
 from googleapiclient import errors
 
 YOUTUBE_DEFAULT_COMMENTS_LIMIT = 100
@@ -108,3 +109,32 @@ async def get_video_comments_logic(video_id: str, limit: int = YOUTUBE_DEFAULT_C
     except Exception as e:
         print(f"Error fetching comments from Google API: {e}")
         raise e
+
+
+async def create_youtube_comments_dataset(video_id: str, limit: int, dataset_name: str) -> str:
+    """
+    Creates a dataset of YouTube comments for a given video ID and saves it to a CSV file.
+    
+    Args:
+        video_id: YouTube video ID
+        limit: Maximum number of comments to retrieve
+        dataset_name: Name of the dataset to save
+        
+    Returns:
+        A message indicating where the dataset was saved
+    """
+    comments_data = await get_video_comments_logic(video_id, limit)
+    comments = comments_data["comments"]
+
+    csv_data = [
+        {
+            "text": comment.displayText,
+            "author": comment.authorDisplayName,
+            "likes": comment.likeCount,
+            "replyCount": comment.totalReplyCount,
+        }
+        for comment in comments
+    ]
+
+    save_array_to_csv(csv_data, f'{dataset_name}_{limit}')
+    return f"Dataset was saved to datasets/{dataset_name}_{limit}.csv"

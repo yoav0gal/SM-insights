@@ -1,19 +1,25 @@
 
-## Getting Started
+# Getting Started
 
-First, run the development server:
+### 1. Install dependencies
 
 ```bash
-npm run dev:https
+cd ./final-Project-Next
+pnpm install
 ```
 
-### create .env.local
-```env
-AUTH_SECRET="Thi/VVFH9NYTtNMhUZK8F3qhp4UdWDzEhIE6w45FEpE=" 
-NEXTAUTH_URL=https://localhost:3000
+### 2. create .env.local file
+```bash
 DOMAIN= "https://localhost:3000"
+GEMINI_API_KEY= <Your own key> # get at https://aistudio.google.com/apikey
+YOUTUBE_API_KEY= <Your own key / contact Yoav> 
+GEMINI_MODEL="gemini-2.0-flash"
 
-AUTH_INSTAGRAM_ID_LOGIN=8830824330376693
-AUTH_INSTAGRAM_SECRET_LOGIN=936a099eb688589e030d31b246f8a9d6
+USE_MOCK_YOUTUBE_DATA=true
+STC_BACKEND_BASE_URL="http://localhost:8000"
 ```
 
+### 3. Run the app
+```bash
+pnpm run dev:https / pnpm run dev
+```

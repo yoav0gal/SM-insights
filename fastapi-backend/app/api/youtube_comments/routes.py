@@ -7,7 +7,7 @@ from ...core.config import DOMAIN
 
 router = APIRouter()
 
-@router.get("/youtube_comments")
+@router.get("/youtube_comments", tags=["create youtube comments dataset"])
 async def get_youtube_comments(
     video_id: str = Query(..., description="YouTube video ID"),
     limit: int = Query(100, description="Maximum number of comments to retrieve"),

@@ -51,7 +51,7 @@ async def get_process_status(
 @router.get("/process-status")
 async def get_process_status_by_params(
     video_id: str = Query(..., description="YouTube video ID"),
-    limit: int = Query(default=100, description="Number of comments analyzed", ge=1)
+    limit: int = Query(default=100, description="Number of comments analyzed")
 ) -> Dict:
     """Get the current status of deep-stc analysis process using video ID and limit."""
     

@@ -10,7 +10,7 @@ async def run_deep_stc_analysis(video_id: str, limit: int) -> None:
         init_process_state(video_id, limit)
         
         dataset_name = f"{video_id}_{limit}"
-        await create_youtube_comments_dataset(video_id, limit, dataset_name)
+        await create_youtube_comments_dataset(video_id, limit, video_id)
         
         # TODO: Implement actual STC analysis here
         await asyncio.sleep(30)

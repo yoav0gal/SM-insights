@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { VideoDetailsComponent } from "./video-details/video-details";
-import { RecommendedComments } from "./recommended-comments/recommended-comments-wrapper";
-import { NoticeableThreads } from "./noticeable-threads/noticeable-threads";
-import { KeyTakeaways } from "./key-takeaways/key-takeaways";
-import { CommentSearch } from "./comments-search/comments-search";
-import { CommentQuestions } from "./comments-questions/comments-questions";
-import { CommentsClustersCard } from "./comments-clusters/comments-cluster-card";
-import { Header } from "@/app/components/header";
+import { Suspense } from 'react';
+import { VideoDetailsComponent } from './video-details/video-details';
+import { RecommendedComments } from './recommended-comments/recommended-comments-wrapper';
+import { NoticeableThreads } from './noticeable-threads/noticeable-threads';
+import { KeyTakeaways } from './key-takeaways/key-takeaways';
+import { CommentSearch } from './comments-search/comments-search';
+import { CommentQuestions } from './comments-questions/comments-questions';
+import { CommentsClustersCard } from './comments-clusters/comments-cluster-card';
+import { Header } from '@/app/components/header';
 
 export default async function YouTubeAnalyzePage({
   params,

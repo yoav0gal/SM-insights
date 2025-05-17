@@ -1,21 +1,26 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { MessageCircle, Youtube, Search } from "lucide-react";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { MessageCircle, Youtube, Search } from 'lucide-react';
+import Lottie from 'lottie-react';
+import loadingAnimation from './loader.json';
+import '../css/index.css';
 
 export function YouTubeSearch() {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const videoId = extractVideoId(url);
     if (videoId) {
-      const format = url.includes("/shorts/") ? "short" : "classic";
+      const format = url.includes('/shorts/') ? 'short' : 'classic';
       router.push(`/youtube/analyze/${videoId}?format=${format}`);
     } else {
-      alert("Invalid YouTube URL");
+      alert('Invalid YouTube URL');
     }
   };
 
@@ -61,6 +66,15 @@ export function YouTubeSearch() {
           </button>
         </div>
       </form>
+      {loading && (
+        <div className="lottie-overlay">
+          <Lottie
+            animationData={loadingAnimation}
+            loop
+            className="lottie-animation"
+          />
+        </div>
+      )}
     </div>
   );
 }

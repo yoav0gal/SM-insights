@@ -48,6 +48,9 @@ __pycache__/
 bertopic_model.pkl
 sentence_transformer_model/
 
+# backend
+fastapi-backend/app/datasets/*.csv
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 
 **/.env

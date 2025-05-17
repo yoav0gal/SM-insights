@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.21.0",
     "@huggingface/transformers": "^3.2.3",
     "@types/ndarray": "^1.0.14",
+    "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "googleapis": "^144.0.0",

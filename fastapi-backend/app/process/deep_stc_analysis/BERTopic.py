@@ -1,122 +1,80 @@
-import pandas as pd
-from bertopic import BERTopic
-import string
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.stem.porter import PorterStemmer
-import nltk
+
+from typing import List, Optional, TypedDict
 import re
+import string
+import nltk
+import pandas as pd
 from collections import Counter
-from typing import List
+from nltk.corpus import stopwords, wordnet
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from sklearn.feature_extraction.text import CountVectorizer
+from sentence_transformers import SentenceTransformer
+from bertopic import BERTopic
 
-def cluster_csv_comments(csv_file_path: str,
-                         text_column: str = 'text',
-                         language: str = 'english',
-                         top_n_words: int = 10,
-                         nr_topics: str = 'auto'):
-    """
-    מקבץ תגובות מקובץ CSV לנושאים לאחר עיבוד מוקדם.
+# Ensure nltk resources are available
+nltk.download("wordnet")
+nltk.download("averaged_perceptron_tagger")
+nltk.download("punkt")
+nltk.download("stopwords")
 
-    Args:
-        csv_file_path: נתיב לקובץ ה-CSV.
-        text_column: שם העמודה שמכילה את הטקסטים (ברירת מחדל: 'text').
-        language: שפת הטקסטים (ברירת מחדל: 'english').
-        top_n_words: מספר המילים המובילות להציג בכל נושא.
-        nr_topics: מספר הנושאים ('auto' למספר אוטומטי).
+class ClusterData(TypedDict):
+    label: str
+    count: int
+    members: List[str]
+    subclusters: Optional['ClusterData']
 
-    Returns:
-        pd.DataFrame: DataFrame עם התגובות, הנושאים והמילים המובילות.
-    """
+STOPWORDS = set(stopwords.words("english"))
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "J": wordnet.ADJ, "R": wordnet.ADV}
 
-    # 1. טעינת הנתונים
-    df = pd.read_csv(csv_file_path)
-    texts = df[text_column].astype(str).tolist()  # וודא שהטקסטים הם מחרוזות
+def remove_punctuation(text): return text.translate(str.maketrans('', '', string.punctuation))
+def remove_stopwords(text): return " ".join([word for word in text.split() if word not in STOPWORDS])
+def remove_numbers(text): return re.sub(r"\d+", "", text)
+def remove_emoji(text): return re.sub(r"["
+    u"\U0001F600-\U0001F64F"
+    u"\U0001F300-\U0001F5FF"
+    u"\U0001F680-\U0001F6FF"
+    u"\U0001F1E0-\U0001F1FF"
+    "]+", "", text, flags=re.UNICODE)
+def stem_words(text): return " ".join([stemmer.stem(word) for word in text.split()])
+def lemmatize_words(text): 
+    pos_tagged_text = nltk.pos_tag(text.split())
+    return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
 
-    # 2. פרה-פרוססינג
-    PUNCT_TO_REMOVE = string.punctuation
-    STOPWORDS = set(stopwords.words(language))
-    lemmatizer = WordNetLemmatizer()
-    wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB,
-                   "J": wordnet.ADJ, "R": wordnet.ADV}
-    stemmer = PorterStemmer()
+def clean_text(text: str) -> str:
+    text = text.lower()
+    text = remove_punc
+    tuation(text)
+    text = remove_emoji(text)
+    text = remove_numbers(text)
+    text = remove_stopwords(text)
+    text = lemmatize_words(text)
+    return text
 
-    def clean_text(text: str) -> str:
-        text = remove_punctuation(text)
-        text = remove_stopwords(text)
-        text = remove_emoji(text)
-        text = lemmatize_words(text)
-        text = stem_words(text)
-        return text
+def extract_clusters_from_texts(texts: List[str], nr_topics: Optional[int] = None, min_topic_size: int = 10) -> List[ClusterData]:
+    cleaned_texts = [clean_text(t) for t in texts]
+    cleaned_texts = [t for t in cleaned_texts if len(t.split()) > 3 and t.isascii()]
 
-    def remove_punctuation(text: str) -> str:
-        return text.translate(str.maketrans('', '', PUNCT_TO_REMOVE))
+    embedding_model = SentenceTransformer("all-mpnet-base-v2")
+    topic_model = BERTopic(embedding_model=embedding_model, verbose=True, nr_topics=nr_topics, min_topic_size=min_topic_size)
 
-    def remove_stopwords(text: str) -> str:
-        return " ".join([word for word in str(text).split() if word not in STOPWORDS])
+    topics, _ = topic_model.fit_transform(cleaned_texts)
 
-    def remove_emoji(text: str) -> str:
-        emoji_pattern = re.compile(
-            "["
-            u"\U0001F600-\U0001F64F"  # emoticons
-            u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-            u"\U0001F680-\U0001F6FF"  # transport & map symbols
-            u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-            u"\U00002702-\U000027B0"
-            u"\U000024C2-\U0001F251"
-            "]+", flags=re.UNICODE)
-        return emoji_pattern.sub(r'', text)
-
-    def lemmatize_words(text: str) -> str:
-        pos_tagged_text = nltk.pos_tag(text.split())
-        return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
-
-    def stem_words(text: str) -> str:
-        return " ".join([stemmer.stem(word) for word in text.split()])
-
-    df['cleaned_text'] = df[text_column].apply(clean_text)
-
-    # הסרת מילים נפוצות ונדירות (אופציונלי - ניתן להוסיף כפרמטר)
-    cnt = Counter()
-    for text in df["cleaned_text"].values:
-        for word in text.split():
-            cnt[word] += 1
-    df['cleaned_text'] = df['cleaned_text'].apply(
-        lambda x: remove_freqwords(x, cnt))
-    df['cleaned_text'] = df['cleaned_text'].apply(
-        lambda x: remove_rarewords(x, cnt))
-
-    def remove_freqwords(text, cnt):
-        FREQWORDS = set([w for (w, wc) in cnt.most_common(10)])
-        return " ".join([word for word in str(text).split() if word not in FREQWORDS])
-
-    def remove_rarewords(text, cnt):
-        n_rare_words = 10
-        RAREWORDS = set([w for (w, wc) in cnt.most_common()[:-
-                                                           n_rare_words-1:-1]])
-        return " ".join([word for word in str(text).split() if word not in RAREWORDS])
-
-    # 3. יצירת המודל והתאמה
-    topic_model = BERTopic(language=language, top_n_words=top_n_words,
-                           nr_topics=nr_topics)
-    topics, probs = topic_model.fit_transform(df['cleaned_text'].tolist())
-
-    # 4. הכנת תוצאות
     topic_info = topic_model.get_topic_info()
-    df_results = pd.DataFrame({'original_text': df[text_column],
-                               'cleaned_text': df['cleaned_text'],
-                               'topic': topics})
+    result: List[ClusterData] = []
 
-    def get_top_words(topic_id):
-        return topic_model.get_topic(topic_id)
+    for _, row in topic_info.iterrows():
+        if row["Topic"] == -1:
+            continue
+        topic_label = topic_model.get_topic(row["Topic"])
+        label = ", ".join([word for word, _ in topic_label[:3]])
+        members = [texts[i] for i, topic_num in enumerate(topics) if topic_num == row["Topic"]]
+        result.append({
+            "label": label,
+            "count": len(members),
+            "members": members,
+            "subclusters": None
+        })
 
-    df_results['top_words'] = df_results['topic'].apply(get_top_words)
-
-    return df_results
-
-
-# דוגמה לשימוש:
-csv_file = 'your_comments.csv'  # החלף בנתיב לקובץ ה-CSV שלך
-results_df = cluster_csv_comments(csv_file, text_column='comment_text',
-                                  language='english', top_n_words=5,
-                                  nr_topics='auto')
-print(results_df.head())
+    return result

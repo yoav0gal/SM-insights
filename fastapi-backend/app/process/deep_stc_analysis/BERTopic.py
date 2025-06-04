@@ -3,11 +3,8 @@ from typing import List, Optional, TypedDict
 import re
 import string
 import nltk
-import pandas as pd
-from collections import Counter
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import PorterStemmer, WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
 
@@ -39,13 +36,12 @@ def remove_emoji(text): return re.sub(r"["
     "]+", "", text, flags=re.UNICODE)
 def stem_words(text): return " ".join([stemmer.stem(word) for word in text.split()])
 def lemmatize_words(text): 
-    pos_tagged_text = nltk.pos_tag(text.split())
-    return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
+    return " ".join([lemmatizer.lemmatize(word) for word in text.split()])
+
 
 def clean_text(text: str) -> str:
     text = text.lower()
-    text = remove_punc
-    tuation(text)
+    text = remove_punctuation(text)
     text = remove_emoji(text)
     text = remove_numbers(text)
     text = remove_stopwords(text)

@@ -31,16 +31,10 @@ def get_sentence_transformer_model() -> SentenceTransformer:
 def save_sentence_transformer_model(model: SentenceTransformer):
     model.save(sentence_transformer_path)
 
-def create_model() -> BERTopic:
-    vectorizer_model = CountVectorizer(stop_words="english")
-    sentence_model = get_sentence_transformer_model()
+def create_model(**kwargs) -> BERTopic:
+    save_sentence_transformer_model(kwargs.embedding_model)
 
-    bertopic_model = BERTopic(
-        vectorizer_model=vectorizer_model,
-        embedding_model=sentence_model,
-        language='english',
-        calculate_probabilities=True,
-        verbose=True)
+    bertopic_model = BERTopic(**kwargs)
     
     with open(bertopic_model_path, "wb") as file:
         pickle.dump(bertopic_model, file)
@@ -53,3 +47,6 @@ def get_model() -> BERTopic:
             return pickle.load(file)
     else:
         return create_model()
+    
+def save_bertopic_model(model: BERTopic):
+    model.save(bertopic_model_path, serialization="safetensors")

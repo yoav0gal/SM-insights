@@ -1,18 +1,10 @@
 
 from typing import List, Optional, TypedDict
 import re
-import string
-import nltk
-from nltk.corpus import stopwords, wordnet
-from nltk.stem import PorterStemmer, WordNetLemmatizer
+from .emojies import UNICODE_EMO
+from .emoticons import EMOTICONS
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
-
-# Ensure nltk resources are available
-nltk.download("wordnet")
-nltk.download("averaged_perceptron_tagger")
-nltk.download("punkt")
-nltk.download("stopwords")
 
 class ClusterData(TypedDict):
     label: str
@@ -20,32 +12,29 @@ class ClusterData(TypedDict):
     members: List[str]
     subclusters: Optional['ClusterData']
 
-STOPWORDS = set(stopwords.words("english"))
-stemmer = PorterStemmer()
-lemmatizer = WordNetLemmatizer()
-wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "J": wordnet.ADJ, "R": wordnet.ADV}
-
-def remove_punctuation(text): return text.translate(str.maketrans('', '', string.punctuation))
-def remove_stopwords(text): return " ".join([word for word in text.split() if word not in STOPWORDS])
-def remove_numbers(text): return re.sub(r"\d+", "", text)
 def remove_emoji(text): return re.sub(r"["
     u"\U0001F600-\U0001F64F"
     u"\U0001F300-\U0001F5FF"
     u"\U0001F680-\U0001F6FF"
     u"\U0001F1E0-\U0001F1FF"
     "]+", "", text, flags=re.UNICODE)
-def stem_words(text): return " ".join([stemmer.stem(word) for word in text.split()])
-def lemmatize_words(text): 
-    return " ".join([lemmatizer.lemmatize(word) for word in text.split()])
+
+def convert_emoticons(text):
+    for emot in EMOTICONS:
+        text = re.sub(u'('+emot+')', "_".join(EMOTICONS[emot].replace(",","").split()), text)
+    return text
+
+def convert_emojis(text):
+    for emot in UNICODE_EMO:
+        text = re.sub(r'('+emot+')', "_".join(UNICODE_EMO[emot].replace(",","").replace(":","").split()), text)
+    return text
 
 
 def clean_text(text: str) -> str:
     text = text.lower()
-    text = remove_punctuation(text)
+    text = convert_emojis(text)
+    text = convert_emoticons(text)
     text = remove_emoji(text)
-    text = remove_numbers(text)
-    text = remove_stopwords(text)
-    text = lemmatize_words(text)
     return text
 
 def extract_clusters_from_texts(texts: List[str], nr_topics: Optional[int] = None, min_topic_size: int = 10) -> List[ClusterData]:

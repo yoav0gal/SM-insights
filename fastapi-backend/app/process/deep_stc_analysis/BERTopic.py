@@ -3,6 +3,7 @@ from typing import List, Optional, TypedDict
 import re
 from .emojies import UNICODE_EMO
 from .emoticons import EMOTICONS
+from .gemini_labeling import representation_model
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
 
@@ -42,14 +43,20 @@ def extract_clusters_from_texts(texts: List[str], nr_topics: Optional[int] = Non
     cleaned_texts = [t for t in cleaned_texts if len(t.split()) > 3 and t.isascii()]
 
     embedding_model = SentenceTransformer("all-mpnet-base-v2")
-    topic_model = BERTopic(embedding_model=embedding_model, verbose=True, nr_topics=nr_topics, min_topic_size=min_topic_size)
-
+    
+    topic_model = BERTopic(embedding_model=embedding_model, verbose=True,representation_model = representation_model, nr_topics=nr_topics, min_topic_size=min_topic_size)
+    print("hi")
     topics, _ = topic_model.fit_transform(cleaned_texts)
+    print("bye")
+    
+    print(topics)
 
     topic_info = topic_model.get_topic_info()
     result: List[ClusterData] = []
 
+    print("AAA")
     for _, row in topic_info.iterrows():
+        print("H")
         if row["Topic"] == -1:
             continue
         topic_label = topic_model.get_topic(row["Topic"])
@@ -62,4 +69,5 @@ def extract_clusters_from_texts(texts: List[str], nr_topics: Optional[int] = Non
             "subclusters": None
         })
 
+    print("C")
     return result

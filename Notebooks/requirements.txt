@@ -9,4 +9,6 @@ transformers
 huggingface_hub
 matplotlib
 mypy
+lxml
+import-ipynb
 #google-generativeai

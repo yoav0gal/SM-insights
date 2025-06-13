@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { LLMCommentsClusters } from "./llm-comments-cluster";
 import { DeepSTCCommentsClusters } from "./deep-stc-comments-cluster";
-import { checkDeepSTCStatus, initDeepSTC } from "./clusters-actions";
+import { checkDeepSTCStatus, initDeepSTC } from "./cluster";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 export interface ClusterData {
@@ -27,8 +27,12 @@ export function CommentClusterTabs({ videoId }: CommentClusterTabsProps) {
   useEffect(() => {
     const startDeepSTC = async () => {
       try {
-        await initDeepSTC(videoId);
-        pollDeepSTCStatus();
+        const result = await initDeepSTC(videoId);
+        if (result.success) {
+          pollDeepSTCStatus();
+        } else {
+          setDeepSTCStatus("error");
+        }
       } catch (error) {
         console.error("Failed to initialize deep-STC:", error);
         setDeepSTCStatus("error");
@@ -36,7 +40,7 @@ export function CommentClusterTabs({ videoId }: CommentClusterTabsProps) {
     };
 
     startDeepSTC();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
   // Poll for deep-STC status every 3 seconds

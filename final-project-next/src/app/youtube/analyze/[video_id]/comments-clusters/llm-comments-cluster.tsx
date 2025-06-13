@@ -9,8 +9,8 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { LLMClusterComments } from "./clusters-actions";
 import type { ClusterData } from "./comments-cluster-tabs";
+import { getLLMClusters } from "./cluster";
 
 const COLORS = [
   "#0088FE",
@@ -32,11 +32,12 @@ type CommentClustersProps = {
 export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
   const [clusters, setClusters] = useState([] as ClusterData[]);
   const [loading, setLoading] = useState(true);
+  const [clusterPath, setClusterPath] = useState<string[]>([]); // Track drill-down
 
   const handleRecluster = useCallback(async () => {
     setLoading(true);
     try {
-      const newClusters = await LLMClusterComments(videoId);
+      const newClusters = await getLLMClusters(videoId);
       setClusters(newClusters);
     } catch (error) {
       console.error("Error reclustering comments:", error);
@@ -49,9 +50,23 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
     handleRecluster();
   }, [handleRecluster]);
 
+  const handleClusterClick = (data: any, index: number) => {
+    const clickedCluster = clusters[index];
+    if (clickedCluster) {
+      setClusterPath([...clusterPath, clickedCluster.label]);
+      setClusters(clickedCluster.subClusters || []);
+    }
+  };
+
+  // Reset to root clustering
+  const handleReset = () => {
+    setClusterPath([]);
+    handleRecluster();
+  };
+
   return (
     <>
-      {loading ? (
+      {loading && !clusters.length ? (
         <div className="h-80 flex items-center justify-center">
           <Skeleton className="h-64 w-64 rounded-full" />
         </div>
@@ -67,12 +82,14 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
                 fill="#8884d8"
                 dataKey="count"
                 label
+                onClick={handleClusterClick} // Pie-level click
               >
                 {clusters.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
                     name={entry.label}
+                    cursor="pointer"
                   />
                 ))}
               </Pie>
@@ -91,13 +108,24 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
         LLM-powered analysis. Each segment represents a different topic or
         sentiment found in the comments.
       </p>
-      <button
-        onClick={handleRecluster}
-        className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-        disabled={loading}
-      >
-        {loading ? "Re-clustering..." : "Re-cluster Comments"}
-      </button>
+      <div className="mt-4 flex gap-2">
+        <button
+          onClick={() => handleRecluster()}
+          className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+          disabled={loading}
+        >
+          {loading ? "Re-clustering..." : "Re-cluster Comments"}
+        </button>
+        {clusterPath.length > 0 && (
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
+            disabled={loading}
+          >
+            Reset
+          </button>
+        )}
+      </div>
     </>
   );
 }

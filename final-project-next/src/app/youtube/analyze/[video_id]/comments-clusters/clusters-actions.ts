@@ -1,5 +1,5 @@
-"use server";
-import { getModel } from "../analysis";
+// "use server";
+import { AnalysisModel, getModel } from "../analysis";
 import { DEFAULT_CREATOR_ID } from "../youtube-analysis-constants";
 import type { ClusterData } from "./comments-cluster-tabs";
 import {
@@ -10,15 +10,6 @@ import axios from "axios";
 
 // Fallback timeout in milliseconds for processing simulation
 const PROCESSING_TIMEOUT = 9000;
-
-export async function LLMClusterComments(videoId: string) {
-  //TODO get video id and creator id from the request (or in a different way)
-  const model = await getModel(videoId, DEFAULT_CREATOR_ID);
-
-  const clusters = await model.clusterBig();
-
-  return clusters;
-}
 
 export async function initDeepSTC(
   videoId: string
@@ -45,7 +36,10 @@ export async function initDeepSTC(
   }
 }
 
-export async function checkDeepSTCStatus(videoId: string): Promise<{
+export async function checkDeepSTCStatus(
+  videoId: string,
+  model: AnalysisModel
+): Promise<{
   status: "processing" | "completed" | "failed";
   data?: ClusterData[];
   error?: string;
@@ -113,7 +107,7 @@ export async function checkDeepSTCStatus(videoId: string): Promise<{
 
     // Get fallback data from LLM clustering
     try {
-      const data = await LLMClusterComments(videoId);
+      const data = await LLMClusterComments(model);
       return {
         status: "completed",
         data: data,

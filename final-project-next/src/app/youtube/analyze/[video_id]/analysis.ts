@@ -21,7 +21,7 @@ interface ClusterResult {
   subClusters?: ClusterResult[]; // For hierarchical clustering
 }
 
-type AnalysisModel = GenerativeModel & {
+export type AnalysisModel = GenerativeModel & {
   keyTakeaways(): Promise<KeyTakeaways>;
   recommendations(): Promise<TransformedComment[]>;
   noticeableThreads(): Promise<Thread[]>;

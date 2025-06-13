@@ -30,7 +30,7 @@ type CommentClustersProps = {
 };
 
 export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
-  const [clusters, setClusters] = useState([] as ClusterData[]);
+  const [clusters, setClusters] = useState([] as ClusterData[][]);
   const [loading, setLoading] = useState(true);
   const [clusterPath, setClusterPath] = useState<string[]>([]); // Track drill-down
 
@@ -38,30 +38,33 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
     setLoading(true);
     try {
       const newClusters = await getLLMClusters(videoId);
-      setClusters(newClusters);
+      setClusters((prevClusters) => [...prevClusters, newClusters]);
     } catch (error) {
       console.error("Error reclustering comments:", error);
     } finally {
       setLoading(false);
     }
-  }, [videoId]);
+  }, []);
 
   useEffect(() => {
     handleRecluster();
   }, [handleRecluster]);
 
   const handleClusterClick = (data: any, index: number) => {
-    const clickedCluster = clusters[index];
+    const clickedCluster = clusters[clusterPath.length][index];
     if (clickedCluster) {
       setClusterPath([...clusterPath, clickedCluster.label]);
-      setClusters(clickedCluster.subClusters || []);
+      setClusters((prevClusters) => [
+        ...prevClusters,
+        clickedCluster.subClusters || [],
+      ]);
     }
   };
 
   // Reset to root clustering
-  const handleReset = () => {
-    setClusterPath([]);
-    handleRecluster();
+  const handleBack = () => {
+    setClusterPath((prevClusterPath) => prevClusterPath.slice(0, -1));
+    setClusters((prevClusters) => prevClusters.slice(0, -1));
   };
 
   return (
@@ -72,10 +75,11 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
         </div>
       ) : (
         <div className="h-80">
+          <div>{clusterPath.join(" > ")}</div>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={clusters}
+                data={clusters[clusterPath.length]}
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
@@ -84,7 +88,7 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
                 label
                 onClick={handleClusterClick} // Pie-level click
               >
-                {clusters.map((entry, index) => (
+                {clusters[clusterPath.length].map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
@@ -118,11 +122,11 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
         </button>
         {clusterPath.length > 0 && (
           <button
-            onClick={handleReset}
+            onClick={handleBack}
             className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
             disabled={loading}
           >
-            Reset
+            Back
           </button>
         )}
       </div>

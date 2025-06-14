@@ -38,15 +38,29 @@ def clean_text(text: str) -> str:
     text = remove_emoji(text)
     return text
 
-def extract_clusters_from_texts(texts: List[str], nr_topics: Optional[int] = None, min_topic_size: int = 10) -> List[ClusterData]:
+
+def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
+    print("Starting BERTopic analysis...")
     cleaned_texts = [clean_text(t) for t in texts]
     cleaned_texts = [t for t in cleaned_texts if len(t.split()) > 3 and t.isascii()]
+    if not cleaned_texts:   # Check if cleaned_texts is empty
+        print("No valid texts to analyze after cleaning.")
+        return []
 
     embedding_model = SentenceTransformer("all-mpnet-base-v2")
-    
-    topic_model = BERTopic(embedding_model=embedding_model, verbose=True,representation_model = representation_model, nr_topics=nr_topics, min_topic_size=min_topic_size)
+    topic_model = BERTopic(
+        embedding_model=embedding_model, 
+        verbose=True,
+        #representation_model = representation_model, 
+        nr_topics=5, 
+        min_topic_size=10)
+
     print("hi")
-    topics, _ = topic_model.fit_transform(cleaned_texts)
+    try:
+        topics, _ = topic_model.fit_transform(cleaned_texts)
+    except Exception as e:
+        print("Error during topic modeling:", e)
+        return []
     print("bye")
     
     print(topics)

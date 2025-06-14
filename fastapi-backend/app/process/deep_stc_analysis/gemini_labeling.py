@@ -1,18 +1,17 @@
 from langchain.chains.question_answering import load_qa_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
 from bertopic.representation import LangChain
-import google.generativeai as genai
 import os
 import traceback
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-
+print (os.getenv("GOOGLE_API_KEY"))
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
     temperature=0,
     max_tokens=None,
     timeout=None,
     max_retries=2,
+    google_api_key=os.getenv("GOOGLE_API_KEY"),
 )
 
 # Load QA chain

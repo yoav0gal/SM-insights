@@ -136,5 +136,5 @@ async def create_youtube_comments_dataset(video_id: str, limit: int, dataset_nam
         for comment in comments
     ]
 
-    save_array_to_csv(csv_data, f'{dataset_name}_{limit}')
-    return f"Dataset was saved to datasets/{dataset_name}_{limit}.csv"
+    save_path = save_array_to_csv(csv_data, f'{dataset_name}_{limit}')
+    return save_path

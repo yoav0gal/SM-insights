@@ -3,9 +3,8 @@ from typing import List, Optional, TypedDict
 import re
 from .emojies import UNICODE_EMO
 from .emoticons import EMOTICONS
-from .gemini_labeling import representation_model
-from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
+from .models import umap_model, hdbscan_model, representation_model, embedding_model
 
 class ClusterData(TypedDict):
     label: str
@@ -39,6 +38,15 @@ def clean_text(text: str) -> str:
     return text
 
 
+
+topic_model = BERTopic(
+    embedding_model=embedding_model, 
+    verbose=True,
+    representation_model = representation_model, 
+    umap_model=umap_model,
+    hdbscan_model=hdbscan_model,
+    )
+
 def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
     print("Starting BERTopic analysis...")
     cleaned_texts = [clean_text(t) for t in texts]
@@ -47,30 +55,17 @@ def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
         print("No valid texts to analyze after cleaning.")
         return []
 
-    embedding_model = SentenceTransformer("all-mpnet-base-v2")
-    topic_model = BERTopic(
-        embedding_model=embedding_model, 
-        verbose=True,
-        #representation_model = representation_model, 
-        nr_topics=5, 
-        min_topic_size=10)
 
-    print("hi")
     try:
         topics, _ = topic_model.fit_transform(cleaned_texts)
     except Exception as e:
         print("Error during topic modeling:", e)
         return []
-    print("bye")
-    
-    print(topics)
 
     topic_info = topic_model.get_topic_info()
     result: List[ClusterData] = []
 
-    print("AAA")
     for _, row in topic_info.iterrows():
-        print("H")
         if row["Topic"] == -1:
             continue
         topic_label = topic_model.get_topic(row["Topic"])
@@ -83,5 +78,4 @@ def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
             "subclusters": None
         })
 
-    print("C")
     return result

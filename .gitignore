@@ -46,7 +46,7 @@ __pycache__/
 
 # model
 bertopic_model.pkl
-models/
+Notebooks/models/
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 

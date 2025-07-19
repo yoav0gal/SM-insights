@@ -30,7 +30,8 @@ def convert_emojis(text):
     return text
 
 
-def clean_text(text: str) -> str:
+def clean_text(text: str | int | float) -> str:
+    text = str(text)
     text = text.lower()
     text = convert_emojis(text)
     text = convert_emoticons(text)

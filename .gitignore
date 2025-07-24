@@ -50,6 +50,7 @@ sentence_transformer_model/
 
 # backend
 fastapi-backend/app/datasets/*.csv
+!fastapi-backend/.vscode/launch.json # Unignore debugger launch.json
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 

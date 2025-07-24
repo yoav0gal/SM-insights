@@ -1,4 +1,4 @@
-# FastAPI Backend Project
+uv # FastAPI Backend Project
 
 This is the backend service for SM-insights, built with FastAPI and using UV as the package manager.
 

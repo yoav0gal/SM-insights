@@ -46,7 +46,7 @@ __pycache__/
 
 # model
 bertopic_model.pkl
-sentence_transformer_model/
+models/
 
 # backend
 fastapi-backend/app/datasets/*.csv

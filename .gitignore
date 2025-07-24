@@ -38,7 +38,7 @@ yarn-error.log*
 next-env.d.ts
 
 # vscode
-.vscode/
+**/.vscode/*
 .history/
 
 # python
@@ -50,7 +50,7 @@ models/
 
 # backend
 fastapi-backend/app/datasets/*.csv
-!fastapi-backend/.vscode/launch.json # Unignore debugger launch.json
+!**/launch.json
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 

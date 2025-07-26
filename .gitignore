@@ -37,8 +37,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# vscode
-.vscode/
+# vscode 
+**/.vscode/*
 .history/
 
 # python
@@ -47,6 +47,10 @@ __pycache__/
 # model
 bertopic_model.pkl
 models/
+
+# backend
+fastapi-backend/app/datasets/*.csv
+!**/launch.json
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 

@@ -11,4 +11,6 @@ matplotlib
 mypy
 datasets
 emoji
+lxml
+import-ipynb
 #google-generativeai

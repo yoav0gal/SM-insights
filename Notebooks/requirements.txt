@@ -1,16 +1,33 @@
-pandas
-bertopic
-keybert
+# .ipynb
 nbformat
 ipykernel
 nb-clean
-beautifulsoup4
+import-ipynb
+
+# basic python
+mypy
+python-dotenv
+scikit-learn
+numpy
+pandas
+# displaying
+plotly
+seaborn
+matplotlib
+tqdm
+
+# BERTopic / Transformers
+bertopic
+keybert
 transformers
 huggingface_hub
-matplotlib
-mypy
 datasets
+
+# pre-procecssing
+beautifulsoup4
 emoji
 lxml
-import-ipynb
+
+# google
+google-genai
 #google-generativeai

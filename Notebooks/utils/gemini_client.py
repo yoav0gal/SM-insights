@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import List
 
+import google.generativeai as genai
 import numpy as np
 import pandas as pd
 from datasets import Dataset

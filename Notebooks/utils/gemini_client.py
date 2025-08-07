@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 from datasets import Dataset
 from dotenv import load_dotenv
-from google import genai
 from scipy.stats import pearsonr, spearmanr
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
@@ -18,7 +17,7 @@ dotenv_path = rood_dir / "final-project-next" / ".env"
 load_dotenv(dotenv_path=dotenv_path)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-google_client = genai.Client(api_key=GEMINI_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 MODEL_NAME = "gemini-embedding-001"
 OUTPUT_DIMENSIONALITY = 768
@@ -66,7 +65,7 @@ def add_embeddings_to_dataframe(
     ):
         batch_texts = texts[i : i + batch_size]
         try:
-            embeddings_response = google_client.models.embed_content(
+            embeddings_response = genai.models.embed_content(
                 model=model_name,
                 contents=batch_texts,
                 config={

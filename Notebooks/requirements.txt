@@ -2,14 +2,15 @@
 nbformat
 ipykernel
 nb-clean
-import-ipynb
 
 # basic python
 mypy
 python-dotenv
 scikit-learn
+scipy
 numpy
 pandas
+faker
 # displaying
 plotly
 seaborn
@@ -30,4 +31,4 @@ lxml
 
 # google
 google-genai
-#google-generativeai
+google-generativeai

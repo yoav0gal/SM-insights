@@ -9,7 +9,7 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { AlertCircle, X } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import type { ClusterData } from "./comments-cluster-tabs";
 import DeepSTCClustersModal from "./hierarchical-clustering";
 
@@ -37,6 +37,7 @@ export function DeepSTCCommentsClusters({
   status,
 }: DeepSTCClustersProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCluster, setSelectedCluster] = useState<ClusterData[]>([]);
 
   if (status === "loading") {
     return (
@@ -63,9 +64,14 @@ export function DeepSTCCommentsClusters({
     );
   }
 
+  const handleSliceClick = (cluster: ClusterData) => {
+    setSelectedCluster(cluster.subClusters ?? []);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
-      <div className="h-80 cursor-pointer" onClick={() => setIsModalOpen(true)}>
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -76,6 +82,7 @@ export function DeepSTCCommentsClusters({
               fill="#8884d8"
               dataKey="count"
               label
+              onClick={(_, index) => handleSliceClick(data[index])} // capture clicked slice
             >
               {data.map((entry, index) => (
                 <Cell
@@ -98,7 +105,7 @@ export function DeepSTCCommentsClusters({
       <DeepSTCClustersModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        data={data}
+        data={selectedCluster}
       />
 
       <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">

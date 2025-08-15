@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Skeleton } from "@/app/components/skeleton";
 import {
   PieChart,
@@ -10,6 +11,7 @@ import {
 } from "recharts";
 import { AlertCircle } from "lucide-react";
 import type { ClusterData } from "./comments-cluster-tabs";
+import DeepSTCClustersModal from "./hierarchical-clustering";
 
 const COLORS = [
   "#FF4560",
@@ -34,6 +36,9 @@ export function DeepSTCCommentsClusters({
   data,
   status,
 }: DeepSTCClustersProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCluster, setSelectedCluster] = useState<ClusterData[]>([]);
+
   if (status === "loading") {
     return (
       <div className="h-80 flex flex-col items-center justify-center">
@@ -59,6 +64,11 @@ export function DeepSTCCommentsClusters({
     );
   }
 
+  const handleSliceClick = (cluster: ClusterData) => {
+    setSelectedCluster(cluster.subClusters ?? []);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <div className="h-80">
@@ -72,6 +82,7 @@ export function DeepSTCCommentsClusters({
               fill="#8884d8"
               dataKey="count"
               label
+              onClick={(_, index) => handleSliceClick(data[index])} // capture clicked slice
             >
               {data.map((entry, index) => (
                 <Cell
@@ -83,13 +94,20 @@ export function DeepSTCCommentsClusters({
             </Pie>
             <Tooltip />
             <Legend
-              formatter={(clusterLabel, entry) => {
-                return `${clusterLabel} : ${entry.payload?.value}`;
-              }}
+              formatter={(clusterLabel, entry) =>
+                `${clusterLabel} : ${entry.payload?.value}`
+              }
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
+
+      <DeepSTCClustersModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={selectedCluster}
+      />
+
       <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
         This chart represents the distribution of comment clusters using
         deep-STC analysis, which provides more accurate and nuanced clustering

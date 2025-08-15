@@ -1,10 +1,13 @@
-
-from typing import List, Optional, TypedDict
+from typing import List, Optional, TypedDict, Any, Dict
 import re
 from .emojies import UNICODE_EMO
 from .emoticons import EMOTICONS
 from bertopic import BERTopic
-from .models import umap_model, hdbscan_model, representation_model, embedding_model
+from .models import umap_model, hdbscan_model, representation_model, embedding_model, kmeans_model
+from sklearn.base import clone
+from sklearn.cluster import KMeans
+from .subclusters import build_subclusters_umap
+
 
 class ClusterData(TypedDict):
     label: str
@@ -33,29 +36,33 @@ def convert_emojis(text):
 def clean_text(text: str | int | float) -> str:
     text = str(text)
     text = text.lower()
-    text = convert_emojis(text)
-    text = convert_emoticons(text)
-    text = remove_emoji(text)
+    # text = convert_emojis(text)
+    # text = convert_emoticons(text)
+    # text = remove_emoji(text)
     return text
 
 
 
-topic_model = BERTopic(
-    embedding_model=embedding_model, 
-    verbose=True,
-    representation_model = representation_model, 
-    umap_model=umap_model,
-    hdbscan_model=hdbscan_model,
-    )
-
-def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
+def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
     print("Starting BERTopic analysis...")
-    cleaned_texts = [clean_text(t) for t in texts]
-    cleaned_texts = [t for t in cleaned_texts if len(t.split()) > 3 and t.isascii()]
-    if not cleaned_texts:   # Check if cleaned_texts is empty
+
+    # keep original indices so we can return original texts (not cleaned)
+    cleaned_pairs = [(i, clean_text(t)) for i, t in enumerate(texts)]
+    kept = [(i, t) for i, t in cleaned_pairs if len(t.split()) > 3 and t.isascii()]
+    if not kept:
         print("No valid texts to analyze after cleaning.")
         return []
 
+    orig_idx = [i for i, _ in kept]
+    cleaned_texts = [t for _, t in kept]
+
+    topic_model = BERTopic(
+        embedding_model=embedding_model,
+        verbose=True,
+        representation_model=representation_model,
+        umap_model=umap_model,
+        hdbscan_model=hdbscan_model,
+    )
 
     try:
         topics, _ = topic_model.fit_transform(cleaned_texts)
@@ -63,20 +70,41 @@ def extract_clusters_from_texts(texts: List[str]) -> List[ClusterData]:
         print("Error during topic modeling:", e)
         return []
 
+    # UMAP coordinates used by HDBSCAN; same order as cleaned_texts
+    umap_coords = topic_model.umap_model.embedding_
+
     topic_info = topic_model.get_topic_info()
-    result: List[ClusterData] = []
+    result: List[Dict[str, Any]] = []
 
     for _, row in topic_info.iterrows():
-        if row["Topic"] == -1:
+        topic_id = row["Topic"]
+        if topic_id == -1:
             continue
-        topic_label = topic_model.get_topic(row["Topic"])
-        label = ", ".join([word for word, _ in topic_label[:3]])
-        members = [texts[i] for i, topic_num in enumerate(topics) if topic_num == row["Topic"]]
+
+        topic_info = topic_model.get_topic(topic_id)
+        parent_label = topic_info[0][0]
+
+        # indices into cleaned_texts for this topic
+        doc_ids = [i for i, t in enumerate(topics) if t == topic_id]
+
+        # members mapped back to original texts, in the same order as doc_ids
+        parent_members = [texts[orig_idx[j]] for j in doc_ids]
+
+        # --- KMeans subclustering in UMAP space (k=5, capped to size) ---
+        subclusters = build_subclusters_umap(
+            parent_label=parent_label,
+            doc_ids=doc_ids,
+            umap_coords=umap_coords,
+            parent_members=parent_members,
+            kmeans_template=kmeans_model,
+            k=5,
+        )
+
         result.append({
-            "label": label,
-            "count": len(members),
-            "members": members,
-            "subclusters": None
+            "label": parent_label,
+            "count": len(parent_members),
+            "members": parent_members,
+            "subclusters": subclusters
         })
 
     return result

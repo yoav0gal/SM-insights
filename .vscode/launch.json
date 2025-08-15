@@ -1,0 +1,48 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug FastAPI with uv",
+        "type": "debugpy",
+        "request": "launch",
+        // Point at the venv’s python executable:
+        // "program": "${workspaceFolder}/.venv/bin/python",         // macOS/Linux
+        "program": "${workspaceFolder}\\.venv\\Scripts\\python.exe", // Windows
+        "args": ["-m", "uv", "run", "uvicorn", "main:app", "--reload"],
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "justMyCode": true
+      },
+      {
+        "name": "Python: Module",
+        "type": "debugpy",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": ["app.main:app", "--reload"]
+      },
+      {
+        "name": "🐍 Debug FastAPI (Uvicorn)",
+        "type": "debugpy",
+        "request": "launch",
+        // === two alternative ways to launch Uvicorn ===
+        // 1) via the uvicorn module:
+        "module": "uvicorn",
+        "args": [
+          "app.main:app",     // the import path to your FastAPI app
+          "--host", "127.0.0.1",
+          "--port", "8000",
+          "--reload"
+        ],
+        // 2) OR directly run your main.py file (uncomment instead):
+        // "program": "${workspaceFolder}/fastapi-backend/app/main.py",
+        // ================================================
+        "cwd": "${workspaceFolder}/fastapi-backend",
+        "env": {
+          // ensure Python can find your app package
+          "PYTHONPATH": "${workspaceFolder}/fastapi-backend"
+        }
+        
+      }
+    ]
+  }
+  

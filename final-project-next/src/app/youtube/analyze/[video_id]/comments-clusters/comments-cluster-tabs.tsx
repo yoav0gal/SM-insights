@@ -9,7 +9,7 @@ export interface ClusterData {
   label: string;
   count: number;
   members: string[];
-  subClusters?: ClusterData[];
+  subclusters?: ClusterData[];
 }
 
 type CommentClusterTabsProps = {

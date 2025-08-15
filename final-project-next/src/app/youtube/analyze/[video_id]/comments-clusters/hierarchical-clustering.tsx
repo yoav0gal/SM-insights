@@ -76,7 +76,7 @@ export default function DeepSTCClustersModal({ isOpen, onClose, data }: Props) {
                   data={data}
                   cx="50%"
                   cy="50%"
-                  outerRadius={140}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="count"
                   isAnimationActive={false}

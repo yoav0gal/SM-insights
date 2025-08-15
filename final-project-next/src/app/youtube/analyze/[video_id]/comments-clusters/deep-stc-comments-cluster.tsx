@@ -64,8 +64,12 @@ export function DeepSTCCommentsClusters({
     );
   }
 
-  const handleSliceClick = (cluster: ClusterData) => {
-    setSelectedCluster(cluster.subClusters ?? []);
+  const handleSliceClick = (clustersData: typeof data, index: number) => {
+
+    const cluster = clustersData[index];
+    setTimeout(() => {
+      setSelectedCluster(cluster.subclusters ?? []);
+    }, 0);
     setIsModalOpen(true);
   };
 
@@ -82,7 +86,7 @@ export function DeepSTCCommentsClusters({
               fill="#8884d8"
               dataKey="count"
               label
-              onClick={(_, index) => handleSliceClick(data[index])} // capture clicked slice
+              onClick={(_, index) => handleSliceClick(data, index)} // capture clicked slice
             >
               {data.map((entry, index) => (
                 <Cell

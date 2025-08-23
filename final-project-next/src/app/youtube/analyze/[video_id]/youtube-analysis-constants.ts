@@ -47,9 +47,35 @@ Respond in a plain text format.
 `;
 
 const COMMENTS_CLUSTERING_INSTRUCTIONS = `
-Cluster the comments based on topic/theme. 
+Cluster the comments based on topic/theme.
+
 For each clustering, provide a list of group names/labels and the number of comments in each group.
-Respond in json format - { label: string, count: number, examples: string[] ,subClusters?: ClusterResult[]; // For hierarchical clustering}[].
+
+You must perform **deep recursive hierarchical clustering**:
+- Start by grouping comments broadly, then iteratively create more specific clusters inside each group.
+- Each cluster must contain:
+  - label: a descriptive name of the theme
+  - count: total number of comments in this cluster
+  - examples: 2–3 representative comment strings
+  - subclusters: an array of child clusters in the same format
+
+Strict rules:
+- The sum of the "count" values of all subclusters within a cluster MUST exactly equal the "count" of that parent cluster.
+- Drill down **recursively until every cluster is as specific as possible**. 
+  - Do not stop after 2 or 3 levels unless no further meaningful subdivision is possible.
+  - If comments in a cluster are very similar, but still slightly different in meaning or context, they should be split into additional subclusters.
+- If a cluster has no meaningful subdivisions, its "subclusters" array should be empty.
+
+Respond strictly in valid JSON format:
+
+[
+  { 
+    "label": string, 
+    "count": number, 
+    "examples": string[], 
+    "subclusters"?: ClusterResult[]
+  }
+]
 `;
 
 //TODO: add a generic way to convert all comments to a unified format (compact for gemini)

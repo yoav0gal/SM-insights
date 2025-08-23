@@ -18,7 +18,7 @@ interface ClusterResult {
   label: string;
   count: number;
   examples: string[];
-  subClusters?: ClusterResult[]; // For hierarchical clustering
+  subclusters?: ClusterResult[]; // For hierarchical clustering
 }
 
 type AnalysisModel = GenerativeModel & {

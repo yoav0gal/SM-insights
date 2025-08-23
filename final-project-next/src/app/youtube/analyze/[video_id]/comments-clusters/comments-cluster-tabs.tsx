@@ -8,7 +8,7 @@ import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 export interface ClusterData {
   label: string;
   count: number;
-  members: string[];
+  members?: string[];
   subclusters?: ClusterData[];
 }
 

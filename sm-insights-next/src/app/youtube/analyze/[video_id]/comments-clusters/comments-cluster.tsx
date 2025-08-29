@@ -28,7 +28,7 @@ interface ClusterData {
   label: string;
   count: number;
   examples: string[];
-  subClusters?: ClusterData[]; // For hierarchical clustering
+  subclusters?: ClusterData[]; // For hierarchical clustering
 }
 
 type CommentClustersProps = {

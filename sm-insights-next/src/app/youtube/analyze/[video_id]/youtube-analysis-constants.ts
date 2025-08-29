@@ -49,7 +49,7 @@ Respond in a plain text format.
 const COMMENTS_CLUSTERING_INSTRUCTIONS = `
 Cluster the comments based on topic/theme. 
 For each clustering, provide a list of group names/labels and the number of comments in each group.
-Respond in json format - { label: string, count: number, examples: string[] ,subClusters?: ClusterResult[]; // For hierarchical clustering}[].
+Respond in json format - { label: string, count: number, examples: string[] ,subclusters?: ClusterResult[]; // For hierarchical clustering}[].
 `;
 
 //TODO: add a generic way to convert all comments to a unified format (compact for gemini)

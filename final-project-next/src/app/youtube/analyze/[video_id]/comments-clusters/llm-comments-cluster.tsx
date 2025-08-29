@@ -9,8 +9,8 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { LLMClusterComments } from "./clusters-actions";
 import type { ClusterData } from "./comments-cluster-tabs";
+import { getLLMClusters } from "./cluster";
 
 const COLORS = [
   "#0088FE",
@@ -30,14 +30,21 @@ type CommentClustersProps = {
 };
 
 export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
-  const [clusters, setClusters] = useState([] as ClusterData[]);
-  const [loading, setLoading] = useState(true);
+  const [clusters, setClusters] = useState<ClusterData[][]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [clusterPath, setClusterPath] = useState<string[]>([]); // Track drill-down
+
+  const MAX_SEGMENTS = 3;
+  const isTruncated = clusterPath.length > MAX_SEGMENTS;
+  const visiblePath = isTruncated
+    ? ["...", ...clusterPath.slice(-MAX_SEGMENTS)]
+    : clusterPath;
 
   const handleRecluster = useCallback(async () => {
     setLoading(true);
     try {
-      const newClusters = await LLMClusterComments(videoId);
-      setClusters(newClusters);
+      const newClusters = await getLLMClusters(videoId);
+      setClusters((prevClusters) => [...prevClusters, newClusters]);
     } catch (error) {
       console.error("Error reclustering comments:", error);
     } finally {
@@ -49,18 +56,46 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
     handleRecluster();
   }, [handleRecluster]);
 
+  const handleClusterClick = (data: any, index: number) => {
+    const clickedCluster = clusters[clusterPath.length][index];
+    if (clickedCluster) {
+      setClusterPath([...clusterPath, clickedCluster.label]);
+      setClusters((prevClusters) => [
+        ...prevClusters,
+        clickedCluster.subclusters || [],
+      ]);
+    }
+  };
+
+  // Reset to root clustering
+  const handleBack = () => {
+    setClusterPath((prevClusterPath) => prevClusterPath.slice(0, -1));
+    setClusters((prevClusters) => prevClusters.slice(0, -1));
+  };
+
   return (
     <>
-      {loading ? (
+      {loading && !clusters.length ? (
         <div className="h-80 flex items-center justify-center">
           <Skeleton className="h-64 w-64 rounded-full" />
         </div>
       ) : (
         <div className="h-80">
+          <div
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+            title={clusterPath.join(" > ")}
+          >
+            {visiblePath.join(" > ")}
+          </div>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={clusters}
+                data={clusters[clusterPath.length]}
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
@@ -68,11 +103,22 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
                 dataKey="count"
                 label
               >
-                {clusters.map((entry, index) => (
+                {clusters[clusterPath.length].map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
                     name={entry.label}
+                    cursor={
+                      entry.subclusters && entry.subclusters.length > 0
+                        ? "pointer"
+                        : "not-allowed"
+                    }
+                    // Only allow click if subclusters exist
+                    onClick={
+                      entry.subclusters && entry.subclusters.length > 0
+                        ? (e) => handleClusterClick(e, index)
+                        : undefined
+                    }
                   />
                 ))}
               </Pie>
@@ -91,13 +137,17 @@ export function LLMCommentsClusters({ videoId }: CommentClustersProps) {
         LLM-powered analysis. Each segment represents a different topic or
         sentiment found in the comments.
       </p>
-      <button
-        onClick={handleRecluster}
-        className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-        disabled={loading}
-      >
-        {loading ? "Re-clustering..." : "Re-cluster Comments"}
-      </button>
+      <div className="mt-4 flex gap-2">
+        {clusterPath.length > 0 && (
+          <button
+            onClick={handleBack}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
+            disabled={loading}
+          >
+            Back
+          </button>
+        )}
+      </div>
     </>
   );
 }

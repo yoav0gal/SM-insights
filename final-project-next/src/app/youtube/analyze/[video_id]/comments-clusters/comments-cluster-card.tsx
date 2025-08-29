@@ -27,7 +27,7 @@ CommentsClustersCard.Skeleton = function CommentsClustersCardSkeleton() {
       <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
         Comment Clusters
       </h3>
-      <div className="h-80 flex items-center justify-center">
+      <div className="h-80 flex items-center justify-center rounded-full">
         <Skeleton className="h-64 w-64 rounded-full" />
       </div>
     </div>

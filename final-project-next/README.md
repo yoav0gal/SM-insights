@@ -14,7 +14,7 @@ npm install -g npm@11.4.0
 DOMAIN= "https://localhost:3000"
 GEMINI_API_KEY= <Your own key> # get at https://aistudio.google.com/apikey
 YOUTUBE_API_KEY= <Your own key / contact Yoav>
-GEMINI_MODEL="gemini-2.0-flash"
+GEMINI_MODEL="gemini-2.5-flash"
 
 USE_MOCK_YOUTUBE_DATA=true
 STC_BACKEND_BASE_URL="http://localhost:8000"

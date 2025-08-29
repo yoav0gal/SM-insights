@@ -113,7 +113,7 @@ export default function DeepSTCClustersModal({ isOpen, onClose, data }: Props) {
                   {cluster.label.replace(/,/g, "")} ({cluster.count})
                 </h3>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  {cluster.members.map((example, eIdx) => (
+                  {cluster.members?.map((example, eIdx) => (
                     <li key={eIdx} className="text-gray-700 dark:text-gray-300">
                       {example}
                     </li>

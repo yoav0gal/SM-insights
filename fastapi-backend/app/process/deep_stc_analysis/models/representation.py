@@ -5,7 +5,7 @@ import os
 import traceback
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
+    model= os.getenv("GEMINI_MODEL") if os.getenv("GEMINI_MODEL") else "gemini-2.0-flash",
     temperature=0,
     max_tokens=None,
     timeout=None,

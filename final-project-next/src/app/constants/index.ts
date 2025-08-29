@@ -5,11 +5,11 @@ export const STC_BACKEND_BASE_URL = `${
 
 export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 500;
 export const USE_YOUTUBE_API_MOCKS = Boolean(
-  process.env.USE_MOCK_YOUTUBE_DATA === "true"
+  process.env.USE_MOCK_YOUTUBE_DATA?.toLowerCase() === "true"
 );
 console.log(USE_YOUTUBE_API_MOCKS ? "using mocks" : " using real data");
 
-type GeminiModel = "gemini-2.0-flash" | "gemini-2.0-flash-lite";
+type GeminiModel = "gemini-2.5-flash" | "gemini-2.5-flash-lite";
 export const GEMINI_MODEL = (process.env.GEMINI_MODEL ??
-  "gemini-2.0-flash-lite") as GeminiModel;
+  "gemini-2.5-flash-lite") as GeminiModel;
 console.log(`Using Gemini model: ${GEMINI_MODEL}`);

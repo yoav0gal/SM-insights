@@ -3,14 +3,13 @@ import asyncio
 import os
 import pandas as pd
 from ...api.youtube_comments.logic import create_youtube_comments_dataset
-from .shared_state import init_process_state, set_process_state, ProcessState
+from .shared_state import set_process_state, ProcessState
 from .BERTopic import extract_clusters_from_texts
 from ...utils.save_array_to_csv import get_save_path
 
 async def run_deep_stc_analysis(video_id: str, limit: int) -> None:
     """Background task to run deep-stc analysis on YouTube comments."""
     try:
-        init_process_state(video_id, limit)
         
         dataset_name = f"{video_id}_{limit}"
         dataset_path = get_save_path(dataset_name)

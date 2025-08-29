@@ -6,6 +6,7 @@ import { MessageCircle, Youtube, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import loadingAnimation from "./loader.json";
 import "../css/index.css";
+import { initDeepSTC } from "../analyze/[video_id]/comments-clusters/clusters-actions";
 
 export function YouTubeSearch() {
   const [url, setUrl] = useState("");
@@ -18,6 +19,7 @@ export function YouTubeSearch() {
     const videoId = extractVideoId(url);
     if (videoId) {
       const format = url.includes("/shorts/") ? "short" : "classic";
+      initDeepSTC(videoId)
       router.push(`/youtube/analyze/${videoId}?format=${format}`);
     } else {
       alert("Invalid YouTube URL");

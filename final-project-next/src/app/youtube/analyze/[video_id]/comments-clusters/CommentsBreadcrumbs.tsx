@@ -17,7 +17,7 @@ type Props = {
 export const CommentsBreadcrumbs = ({ path, onNavigate }: Props) => {
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList key="list">
         <BreadcrumbItem key="root">
           <BreadcrumbLink
             href="#"

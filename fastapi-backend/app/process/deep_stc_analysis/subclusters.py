@@ -51,7 +51,7 @@ def generate_subcluster_label(members: List[str]) -> str:
     if not members:
         return "Subtopic"
 
-    documents_block = "\n".join(f"- {m}" for m in members)
+    documents_block = "\n".join(f"- {m}" for m in members[:25])
     filled_prompt = (
         prompt
         .replace("[DOCUMENTS]", documents_block)

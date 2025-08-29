@@ -60,7 +60,7 @@ Create a single-sentence label (6–12 words), and return the label only.
 [/INST]
 """
 
-
 prompt = system_prompt + example_prompt + example_prompt_2 + main_prompt
+
 # Create your representation model
-representation_model = LangChain(chain, prompt=prompt)
+representation_model = LangChain(chain, prompt=prompt, nr_docs=5)

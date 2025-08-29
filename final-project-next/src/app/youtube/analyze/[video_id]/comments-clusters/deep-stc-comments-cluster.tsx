@@ -75,7 +75,7 @@ export function DeepSTCCommentsClusters({
 
   return (
     <>
-      <div className="h-80">
+      <div className="h-[30rem]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie

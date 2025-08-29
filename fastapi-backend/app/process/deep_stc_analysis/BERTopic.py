@@ -7,6 +7,7 @@ from .models import umap_model, hdbscan_model, representation_model, embedding_m
 from sklearn.base import clone
 from sklearn.cluster import KMeans
 from .subclusters import build_subclusters_umap
+from collections import defaultdict
 
 
 class ClusterData(TypedDict):
@@ -22,33 +23,35 @@ def remove_emoji(text): return re.sub(r"["
     u"\U0001F1E0-\U0001F1FF"
     "]+", "", text, flags=re.UNICODE)
 
-def convert_emoticons(text):
-    for emot in EMOTICONS:
-        text = re.sub(u'('+emot+')', "_".join(EMOTICONS[emot].replace(",","").split()), text)
-    return text
+# Precompile once at import time
+EMOTICON_REGEX = re.compile("|".join(map(re.escape, EMOTICONS.keys())))
+UNICODE_EMO_REGEX = re.compile("|".join(map(re.escape, UNICODE_EMO.keys())))
 
-def convert_emojis(text):
-    for emot in UNICODE_EMO:
-        text = re.sub(r'('+emot+')', "_".join(UNICODE_EMO[emot].replace(",","").replace(":","").split()), text)
-    return text
+def convert_emoticons(text: str) -> str:
+    return EMOTICON_REGEX.sub(lambda m: "_".join(EMOTICONS[m.group()].replace(",", "").split()), text)
+
+def convert_emojis(text: str) -> str:
+    return UNICODE_EMO_REGEX.sub(lambda m: "_".join(UNICODE_EMO[m.group()].replace(",", "").replace(":", "").split()), text)
+
 
 
 def clean_text(text: str | int | float) -> str:
-    text = str(text)
-    text = text.lower()
+    text = str(text).lower()
+    # text = text.lower()
     # text = convert_emojis(text)
     # text = convert_emoticons(text)
     # text = remove_emoji(text)
     return text
 
-
+def is_valid_text(text: str) -> bool:
+    return text.isascii() and text.count(" ") >= 3
 
 def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
     print("Starting BERTopic analysis...")
 
     # keep original indices so we can return original texts (not cleaned)
     cleaned_pairs = [(i, clean_text(t)) for i, t in enumerate(texts)]
-    kept = [(i, t) for i, t in cleaned_pairs if len(t.split()) > 3 and t.isascii()]
+    kept = [(i, t) for i, t in cleaned_pairs if is_valid_text(t)]
     if not kept:
         print("No valid texts to analyze after cleaning.")
         return []
@@ -73,6 +76,10 @@ def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
     # UMAP coordinates used by HDBSCAN; same order as cleaned_texts
     umap_coords = topic_model.umap_model.embedding_
 
+    topic_to_docs = defaultdict(list)
+    for i, t in enumerate(topics):
+        topic_to_docs[t].append(i)
+
     topic_info = topic_model.get_topic_info()
     result: List[Dict[str, Any]] = []
 
@@ -85,7 +92,7 @@ def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
         parent_label = topic_info[0][0]
 
         # indices into cleaned_texts for this topic
-        doc_ids = [i for i, t in enumerate(topics) if t == topic_id]
+        doc_ids = topic_to_docs[topic_id]
 
         # members mapped back to original texts, in the same order as doc_ids
         parent_members = [texts[orig_idx[j]] for j in doc_ids]

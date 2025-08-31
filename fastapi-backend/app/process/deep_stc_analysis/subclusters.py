@@ -1,11 +1,10 @@
 from typing import List, Any, Dict
-from sklearn.base import clone
-from sklearn.cluster import KMeans
+from .models import HybridClustering
 import json
 
 from .models.representation import llm, prompt  # prompt is not used in batch mode
 
-# ----- BATCH PROMPT TEMPLATES -----
+# ----- BATCH PROMPT TEMPLATES ----- 
 system_prompt = """
 <s>[INST] <<SYS>>
 You label groups of comments.
@@ -34,13 +33,13 @@ Return the labels as a JSON array, in order.
 """
 
 main_prompt = """
-Here are some groups of comments:
+Here are  some groups of comments:
 {GROUPS}
 
 Return the labels as a JSON array, in order.
 """
 
-# ----- BATCH LABELING HELPER -----
+# ----- BATCH LABELING HELPER ----- 
 def generate_labels_batch(group_texts: List[List[str]]) -> List[str]:
     """
     Batch-label groups of texts using one LLM call.
@@ -92,30 +91,28 @@ def generate_labels_batch(group_texts: List[List[str]]) -> List[str]:
 def build_subclusters_umap(
     parent_label: str,
     doc_ids: List[int],               # indices into cleaned_texts for this topic
-    umap_coords,                      # array-like; same order as cleaned_texts
+    umap_coords,
     parent_members: List[str],        # texts for this topic in the same order as doc_ids
-    kmeans_template: KMeans,
-    k: int = 5,
 ) -> List[Dict[str, Any]]:
     """Cluster in UMAP space and return batch-labeled subclusters (no NumPy)."""
     if len(doc_ids) < 2:
         return []
 
-    # Effective k (at least 2, at most number of items)
-    k_eff = min(max(2, k), len(doc_ids))
-
     # Slice UMAP rows we need in local order
     X = [list(umap_coords[i]) for i in doc_ids]
 
-    # ---- KMeans runs ONCE here ----
-    km: KMeans = clone(kmeans_template)
-    km.set_params(n_clusters=k_eff)
-    labels = km.fit_predict(X)
+    # ---- HybridClustering runs ONCE here ----
+    hybrid_model = HybridClustering(use_hdbscan=False, max_k=5)
+    hybrid_model.fit(X)
+    labels = hybrid_model.labels_
 
     # Group local positions by predicted label
     groups: Dict[int, List[int]] = {}
     for pos, lbl in enumerate(labels):
         groups.setdefault(int(lbl), []).append(pos)
+
+    if not groups:
+        return []
 
     # Build a stable index order for batching (Group 0..N-1)
     # Use sorted cluster IDs to keep determinism across runs with same random_state
@@ -130,10 +127,6 @@ def build_subclusters_umap(
 
     # ---- Single LLM call for all labels ----
     batch_labels = generate_labels_batch(group_texts)
-    print("---------------------------------------------")
-    print(group_texts)
-    print(batch_labels)
-    print("---------------------------------------------")
 
     # Assemble subclusters with the returned labels
     subclusters: List[Dict[str, Any]] = []

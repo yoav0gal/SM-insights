@@ -3,9 +3,8 @@ import re
 from .emojies import UNICODE_EMO
 from .emoticons import EMOTICONS
 from bertopic import BERTopic
-from .models import umap_model, hdbscan_model, representation_model, embedding_model, kmeans_model
-from sklearn.base import clone
-from sklearn.cluster import KMeans
+from .models import umap_model, representation_model, embedding_model, kmeans_model, HybridClustering
+
 from .subclusters import build_subclusters_umap
 from collections import defaultdict
 
@@ -64,7 +63,7 @@ def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
         verbose=True,
         representation_model=representation_model,
         umap_model=umap_model,
-        hdbscan_model=hdbscan_model,
+        hdbscan_model=HybridClustering(),
     )
 
     try:
@@ -103,8 +102,6 @@ def extract_clusters_from_texts(texts: List[str]) -> List[Dict[str, Any]]:
             doc_ids=doc_ids,
             umap_coords=umap_coords,
             parent_members=parent_members,
-            kmeans_template=kmeans_model,
-            k=5,
         )
 
         result.append({

@@ -5,7 +5,8 @@ import os
 import traceback
 
 llm = ChatGoogleGenerativeAI(
-    model= os.getenv("GEMINI_MODEL") if os.getenv("GEMINI_MODEL") else "gemini-2.0-flash",
+    model= "gemini-2.5-flash",
+    # os.getenv("GEMINI_MODEL") if os.getenv("GEMINI_MODEL") else "gemini-2.0-flash",
     temperature=0,
     max_tokens=None,
     timeout=None,
@@ -20,7 +21,7 @@ system_prompt = """
 <s>[INST] <<SYS>>
 You label topics from short document sets.
 Rules:
-1) Output exactly one sentence (6–12 words).
+1) Output no longer than 10 words!
 2) Return the label text only — no quotes or extras.
 3) No lead-ins like "This topic...", no endings like "in this topic".
 4) Be specific and informative; avoid bland labels.

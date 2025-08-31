@@ -61,6 +61,7 @@ async function fetchReplies(commentId: string): Promise<TransformedComment[]> {
   let allReplies: TransformedComment[] = [];
   let nextPageToken: string | undefined = undefined;
 
+  return [];
   try {
     do {
       const pageToken = (nextPageToken ? { pageToken: nextPageToken } : {}) as
@@ -97,6 +98,7 @@ export async function getVideoCommentsLogic(
 ): Promise<{ comments: TransformedComment[]; commentsCount: number }> {
   if (USE_YOUTUBE_API_MOCKS) return commentsDataMock;
 
+  console.log("Fetching comments from YouTube API for videoId");
   let allComments: TransformedComment[] = [];
   let nextPageToken: string | undefined = undefined;
 
@@ -111,7 +113,7 @@ export async function getVideoCommentsLogic(
       const response = await youtube.commentThreads.list({
         part: ["snippet"],
         videoId: videoId,
-        maxResults: 10,
+        maxResults: 100,
         ...pageToken,
       });
 

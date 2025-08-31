@@ -31,9 +31,9 @@ export default async function YouTubeAnalyzePage({
               <Suspense fallback={<RecommendedComments.Skeleton />}>
                 <RecommendedComments videoId={videoId} />
               </Suspense>
-              <Suspense fallback={<NoticeableThreads.Skeleton />}>
+              {/* <Suspense fallback={<NoticeableThreads.Skeleton />}>
                 <NoticeableThreads videoId={videoId} />
-              </Suspense>
+              </Suspense> */}
             </div>
             <div className="lg:col-span-2 space-y-8">
               <Suspense fallback={<KeyTakeaways.Skeletone />}>

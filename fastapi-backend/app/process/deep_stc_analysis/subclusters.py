@@ -2,6 +2,8 @@ from typing import List, Any, Dict
 from sklearn.base import clone
 from sklearn.cluster import KMeans
 import json
+from sklearn.metrics import davies_bouldin_score
+from collections import Counter
 
 from .models.representation import llm, prompt  # prompt is not used in batch mode
 
@@ -89,6 +91,49 @@ def generate_labels_batch(group_texts: List[List[str]]) -> List[str]:
         return ["Subtopic"] * len(group_texts)
 
 
+def select_optimal_k(X: List[List[float]], kmeans_template: KMeans, max_k: int = 20) -> int:
+    """
+    Select optimal number of clusters using Davies-Bouldin score.
+    Ensures each cluster has at least 2 members.
+    
+    Args:
+        X: Data points to cluster
+        kmeans_template: KMeans model template to clone
+        max_k: Maximum k to try (default: 20)
+    
+    Returns:
+        Optimal k value (2 to max_k)
+    """
+    max_k = min(max_k, len(X) - 1)
+    if max_k < 2:
+        return 2
+    
+    best_score = float('inf')
+    best_k = 2
+    
+    for test_k in range(2, max_k + 1):
+        try:
+            km_test = clone(kmeans_template)
+            km_test.set_params(n_clusters=test_k)
+            labels_test = km_test.fit_predict(X)
+            
+            # Check if all clusters have at least 2 members
+            cluster_sizes = Counter(labels_test)
+            if any(size < 2 for size in cluster_sizes.values()):
+                continue
+            
+            # Calculate Davies-Bouldin score (lower is better)
+            score = davies_bouldin_score(X, labels_test)
+            
+            if score < best_score:
+                best_score = score
+                best_k = test_k
+        except Exception:
+            continue
+    
+    print(f'optimal k - {best_k}')
+    return best_k
+
 def build_subclusters_umap(
     parent_label: str,
     doc_ids: List[int],               # indices into cleaned_texts for this topic
@@ -101,13 +146,13 @@ def build_subclusters_umap(
     if len(doc_ids) < 2:
         return []
 
-    # Effective k (at least 2, at most number of items)
-    k_eff = min(max(2, k), len(doc_ids))
-
     # Slice UMAP rows we need in local order
     X = [list(umap_coords[i]) for i in doc_ids]
+    
+    # Auto-select optimal k using Davies-Bouldin score
+    k_eff = select_optimal_k(X, kmeans_template)
 
-    # ---- KMeans runs ONCE here ----
+    # ---- KMeans runs ONCE here with optimal k ----
     km: KMeans = clone(kmeans_template)
     km.set_params(n_clusters=k_eff)
     labels = km.fit_predict(X)
@@ -130,10 +175,6 @@ def build_subclusters_umap(
 
     # ---- Single LLM call for all labels ----
     batch_labels = generate_labels_batch(group_texts)
-    print("---------------------------------------------")
-    print(group_texts)
-    print(batch_labels)
-    print("---------------------------------------------")
 
     # Assemble subclusters with the returned labels
     subclusters: List[Dict[str, Any]] = []

@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Home } from "lucide-react";
+import React from "react";
 
 type Props = {
   path: string[];
@@ -33,7 +34,7 @@ export const CommentsBreadcrumbs = ({ path, onNavigate }: Props) => {
           </BreadcrumbLink>
         </BreadcrumbItem>
         {path.map((segment, index) => (
-          <>
+          <React.Fragment key={`segment-${index}`}>
             <BreadcrumbSeparator key={index+1} />
             <BreadcrumbItem key={segment}>
               {index === path.length - 1 ? (
@@ -54,7 +55,7 @@ export const CommentsBreadcrumbs = ({ path, onNavigate }: Props) => {
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>
-          </>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

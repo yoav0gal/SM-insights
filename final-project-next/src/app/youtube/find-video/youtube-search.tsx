@@ -7,20 +7,26 @@ import Lottie from "lottie-react";
 import loadingAnimation from "./loader.json";
 import "../css/index.css";
 import { initDeepSTC } from "../analyze/[video_id]/comments-clusters/clusters-actions";
+import {createModel} from "../analyze/[video_id]/analysis";
 
 export function YouTubeSearch() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     const videoId = extractVideoId(url);
     if (videoId) {
       const format = url.includes("/shorts/") ? "short" : "classic";
-      initDeepSTC(videoId)
+      try {
+      console.log(videoId)
+      await Promise.all([initDeepSTC(videoId),createModel(videoId, "search page")])
       router.push(`/youtube/analyze/${videoId}?format=${format}`);
+      } catch (e) {
+        alert(e)
+      }
     } else {
       alert("Invalid YouTube URL");
     }
@@ -74,6 +80,7 @@ export function YouTubeSearch() {
             animationData={loadingAnimation}
             loop
             className="lottie-animation"
+
           />
         </div>
       )}

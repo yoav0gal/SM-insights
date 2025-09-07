@@ -1,5 +1,7 @@
+"use server";
 import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import {
+  DEFAULT_CREATOR_ID,
   generateSystemInstructions,
   TASK_NAMES,
 } from "./youtube-analysis-constants";
@@ -34,7 +36,7 @@ export type AnalysisModel = GenerativeModel & {
 
 const activeModels = new Map<string, AnalysisModel>();
 
-export function getGenerativeModel(systemInstruction: string) {
+function getGenerativeModel(systemInstruction: string) {
   const model = genAI.getGenerativeModel({
     model: GEMINI_MODEL,
     systemInstruction: systemInstruction,
@@ -121,7 +123,8 @@ async function addAnalysisTasksToModel(
   return model as AnalysisModel;
 }
 
-export async function createModel(videoId: string, creatorId: string) {
+export async function createModel(videoId: string, calledFrom:string, creatorId: string = DEFAULT_CREATOR_ID) {
+  console.log("Creating model...");
   const { comments } = await getVideoCommentsLogic(videoId);
   const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const systemInstructions = await generateSystemInstructions(
@@ -132,15 +135,19 @@ export async function createModel(videoId: string, creatorId: string) {
   const model = getGenerativeModel(systemInstructions) as AnalysisModel;
 
   const analysisModel = await addAnalysisTasksToModel(model);
+  if (calledFrom === "search page") {
+    activeModels.set(`${creatorId}-${videoId}`, model);
+    return "Model created successfully"
+  }
 
   return analysisModel;
 }
 
-export async function getModel(videoId: string, creatorId: string) {
+export async function getModel(videoId: string, creatorId: string=DEFAULT_CREATOR_ID) {
   if (activeModels.has(`${creatorId}-${videoId}`)) {
     return activeModels.get(`${creatorId}-${videoId}`) as AnalysisModel;
   }
-  const model = await createModel(videoId, creatorId);
+  const model = await createModel(videoId, "getModel",creatorId) as AnalysisModel;
   activeModels.set(`${creatorId}-${videoId}`, model);
   return model;
 }

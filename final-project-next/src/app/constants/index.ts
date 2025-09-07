@@ -3,7 +3,7 @@ export const STC_BACKEND_BASE_URL = `${
   process.env.STC_BACKEND_BASE_URL || "http://localhost:8000"
 }`;
 
-export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 500;
+export const YOUTUBE_DEFAULT_COMMENTS_LIMIT = 200;
 export const USE_YOUTUBE_API_MOCKS = Boolean(
   process.env.USE_MOCK_YOUTUBE_DATA?.toLowerCase() === "true"
 );

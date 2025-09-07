@@ -4,7 +4,7 @@ import os
 
 load_dotenv(dotenv_path="../.env.local")
 
-YOUTUBE_DEFAULT_COMMENTS_LIMIT = 50
+YOUTUBE_DEFAULT_COMMENTS_LIMIT = 200
 DOMAIN = os.getenv("DOMAIN", "http://localhost:8000")
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 

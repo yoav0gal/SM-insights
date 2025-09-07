@@ -103,11 +103,6 @@ export async function generateSystemInstructions(
      Focus on identifying key themes, user sentiment, and meaningful discussions.
      Prioritize comments that ${creatorPreferences}. 
 
-     Here are the comments for this video:
-    \`\`\`json
-    ${JSON.stringify(videoComments)}
-    \`\`\`
-
     When given a task, follow these instructions:
 
     Task Names:
@@ -132,5 +127,11 @@ export async function generateSystemInstructions(
         }\`: ${COMMENTS_CLUSTERING_INSTRUCTIONS} (hierarchical)
     
     Respond in JSON format where applicable.
+
+
+    Here are the comments for this video:
+    \`\`\`json
+    ${JSON.stringify(videoComments)}
+    \`\`\`
     `;
 }

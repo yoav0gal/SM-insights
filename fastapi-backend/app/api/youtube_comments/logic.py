@@ -11,7 +11,7 @@ from ...clients.youtube_client import youtube
 from ...utils.save_array_to_csv import save_array_to_csv
 from googleapiclient import errors
 
-YOUTUBE_DEFAULT_COMMENTS_LIMIT = 100
+YOUTUBE_DEFAULT_COMMENTS_LIMIT = 200
 
 
 def transform_comment(item: YoutubeCommentSnippet, total_reply_count: int = 0) -> TransformedComment:
